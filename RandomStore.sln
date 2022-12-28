@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomStore", "RandomStore\RandomStore.csproj", "{0E011666-97BB-45A9-ADE3-120DEBDA16FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomStore.Application", "RandomStore\RandomStore.Application.csproj", "{0E011666-97BB-45A9-ADE3-120DEBDA16FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomStoreRepo", "RandomStoreRepo\RandomStoreRepo.csproj", "{914B17B1-9E48-4680-B63B-C54D0B7C2286}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomStore.Repository", "RandomStoreRepo\RandomStore.Repository.csproj", "{914B17B1-9E48-4680-B63B-C54D0B7C2286}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomStore.Services", "RandomStore.Services\RandomStore.Services.csproj", "{E8DD1F98-B687-42B0-8564-1BFEAF61AFC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{914B17B1-9E48-4680-B63B-C54D0B7C2286}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{914B17B1-9E48-4680-B63B-C54D0B7C2286}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{914B17B1-9E48-4680-B63B-C54D0B7C2286}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8DD1F98-B687-42B0-8564-1BFEAF61AFC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8DD1F98-B687-42B0-8564-1BFEAF61AFC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8DD1F98-B687-42B0-8564-1BFEAF61AFC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8DD1F98-B687-42B0-8564-1BFEAF61AFC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
