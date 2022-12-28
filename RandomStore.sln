@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomStore", "RandomStore\RandomStore.csproj", "{0E011666-97BB-45A9-ADE3-120DEBDA16FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomStoreRepo", "RandomStoreRepo\RandomStoreRepo.csproj", "{914B17B1-9E48-4680-B63B-C54D0B7C2286}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E011666-97BB-45A9-ADE3-120DEBDA16FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E011666-97BB-45A9-ADE3-120DEBDA16FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E011666-97BB-45A9-ADE3-120DEBDA16FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E011666-97BB-45A9-ADE3-120DEBDA16FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{914B17B1-9E48-4680-B63B-C54D0B7C2286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{914B17B1-9E48-4680-B63B-C54D0B7C2286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{914B17B1-9E48-4680-B63B-C54D0B7C2286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{914B17B1-9E48-4680-B63B-C54D0B7C2286}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96B2A712-2E5F-45BD-8C7A-212DD0FCB5E5}
+	EndGlobalSection
+EndGlobal
