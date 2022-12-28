@@ -5,6 +5,8 @@ namespace RandomStoreRepo
 {
     public class RandomStoreOneDB: DbContext
     {
+        public RandomStoreOneDB() { }
+
         public RandomStoreOneDB(DbContextOptions<RandomStoreOneDB> options) : base(options)
         { 
             this.Database.EnsureCreated();
@@ -44,13 +46,13 @@ namespace RandomStoreRepo
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId });
 
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.OrderId);
+                entity.HasOne(od => od.Order)
+                    .WithMany(o => o.OrderDetails)
+                    .HasForeignKey(od => od.OrderId);
 
-                entity.HasOne(d => d.Product)
+                entity.HasOne(od => od.Product)
                     .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.ProductId);
+                    .HasForeignKey(od => od.ProductId);
             });
         }
     }
