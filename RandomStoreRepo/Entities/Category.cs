@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RandomStoreRepo.Entities
 {
-    class Category
+    public class Category
     {
         [Key]
         [Column("CategoryID")]
@@ -19,5 +19,7 @@ namespace RandomStoreRepo.Entities
 
         [Column(TypeName = "image")]
         public byte[] Picture { get; set; }
+
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

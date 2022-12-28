@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RandomStoreRepo.Entities
 {
-    class Order
+    public class Order
     {
         [Key]
         [Column("OrderID")]
@@ -21,5 +21,8 @@ namespace RandomStoreRepo.Entities
 
         [StringLength(15)]
         public string ShipCountry { get; set; }
+
+        [InverseProperty(nameof(OrderDetail.Order))]
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

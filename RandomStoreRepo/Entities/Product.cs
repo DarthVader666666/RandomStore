@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RandomStoreRepo.Entities
 {
-    class Product
+    public class Product
     {
         [Key]
         [Column("ProductID")]
@@ -28,5 +28,8 @@ namespace RandomStoreRepo.Entities
         [ForeignKey(nameof(CategoryId))]
         [InverseProperty("Products")]
         public virtual Category Category { get; set; }
+
+        [InverseProperty(nameof(OrderDetail.Product))]
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }
