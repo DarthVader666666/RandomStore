@@ -11,7 +11,7 @@ using RandomStoreRepo;
 
 namespace RandomStore.Repository.Migrations
 {
-    [DbContext(typeof(RandomStoreOneDB))]
+    [DbContext(typeof(RandomStoreOneDbContext))]
     [Migration("20221229095805_stretchedDescriptionLength")]
     partial class stretchedDescriptionLength
     {

@@ -10,9 +10,9 @@ namespace RandomStore.Services.ProductService
 {
     public class ProductService : IProductService
     {
-        private readonly RandomStoreOneDB _context;
+        private readonly RandomStoreOneDbContext _context;
 
-        public ProductService(RandomStoreOneDB context)
+        public ProductService(RandomStoreOneDbContext context)
         {
             this._context = context is not null ? context : throw new ArgumentNullException();
         }

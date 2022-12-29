@@ -9,7 +9,7 @@ using RandomStore.Services.ProductService;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.
-    AddDbContext<RandomStoreOneDB>(options =>
+    AddDbContext<RandomStoreOneDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RandomStoreOne")));
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

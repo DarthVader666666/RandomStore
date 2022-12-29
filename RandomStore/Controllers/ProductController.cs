@@ -15,7 +15,7 @@ namespace RandomStore.Application.Controllers
 
         public ProductController(IProductService service)
         {
-            this._service = service is not null ? service : throw new ArgumentNullException();
+            this._service = service is null ? throw new ArgumentNullException() : service;
             this._toProduct = new Mapper(new MapperConfiguration(conf =>
             conf.CreateMap<ProductCreateModel, Product>()));
         }
@@ -27,7 +27,10 @@ namespace RandomStore.Application.Controllers
 
             var result = await this._service.CreateProductAsync(product);
 
-            if (result > 0) return Ok($"Product id={result} created!");
+            if (result > 0)
+            {
+                return Ok($"Product id={result} created!");
+            }
 
             return BadRequest();
         }

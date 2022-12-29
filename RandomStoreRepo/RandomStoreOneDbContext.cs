@@ -3,11 +3,11 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStoreRepo
 {
-    public class RandomStoreOneDB: DbContext
+    public class RandomStoreOneDbContext: DbContext
     {
-        public RandomStoreOneDB() { }
+        public RandomStoreOneDbContext() { }
 
-        public RandomStoreOneDB(DbContextOptions<RandomStoreOneDB> options) : base(options)
+        public RandomStoreOneDbContext(DbContextOptions<RandomStoreOneDbContext> options) : base(options)
         { 
             this.Database.EnsureCreated();
         }
@@ -35,6 +35,8 @@ namespace RandomStoreRepo
                 entity.HasKey(e => e.CategoryId);
                 entity.HasMany(category => category.Products).
                     WithOne(product => product.Category);
+
+                entity.Property(e => e.Picture).HasDefaultValue(null);
             });
 
             modelBuilder.Entity<Order>(entity =>
