@@ -16,10 +16,10 @@ namespace RandomStoreRepo.Entities
 
         [ForeignKey(nameof(OrderId))]
         [InverseProperty("OrderDetails")]
-        public virtual Order Order { get; set; }
+        public Order Order { get; set; }
 
         [ForeignKey(nameof(ProductId))]
         [InverseProperty("OrderDetails")]
-        public virtual Product Product { get; set; }
+        public Product Product { get; set; }
     }
 }

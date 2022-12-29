@@ -27,9 +27,9 @@ namespace RandomStoreRepo.Entities
 
         [ForeignKey(nameof(CategoryId))]
         [InverseProperty("Products")]
-        public virtual Category Category { get; set; }
+        public Category Category { get; set; }
 
         [InverseProperty(nameof(OrderDetail.Product))]
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

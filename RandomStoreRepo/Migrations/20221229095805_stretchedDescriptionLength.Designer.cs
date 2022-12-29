@@ -9,11 +9,11 @@ using RandomStoreRepo;
 
 #nullable disable
 
-namespace RandomStoreRepo.Migrations
+namespace RandomStore.Repository.Migrations
 {
     [DbContext(typeof(RandomStoreOneDB))]
-    [Migration("20221228173737_initial")]
-    partial class initial
+    [Migration("20221229095805_stretchedDescriptionLength")]
+    partial class stretchedDescriptionLength
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,10 +41,10 @@ namespace RandomStoreRepo.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("ntext");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte[]>("Picture")
-                        .IsRequired()
                         .HasColumnType("image");
 
                     b.HasKey("CategoryId");

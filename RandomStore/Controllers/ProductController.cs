@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RandomStore.Application.Models.ProductModels;
 using RandomStore.Services;
@@ -18,13 +17,15 @@ namespace RandomStore.Application.Controllers
         {
             this._service = service is not null ? service : throw new ArgumentNullException();
             this._toProduct = new Mapper(new MapperConfiguration(conf =>
-            conf.CreateMap<Product, ProductCreateModel>()));
+            conf.CreateMap<ProductCreateModel, Product>()));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductCreateModel product)
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateProduct(ProductCreateModel productModel)
         {
-            var result = await this._service.CreateProductAsync(this._toProduct.Map<Product>(product));
+            var product = this._toProduct.Map<Product>(productModel);
+
+            var result = await this._service.CreateProductAsync(product);
 
             if (result > 0) return Ok($"Product id={result} created!");
 

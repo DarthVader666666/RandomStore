@@ -23,6 +23,6 @@ namespace RandomStoreRepo.Entities
         public string ShipCountry { get; set; }
 
         [InverseProperty(nameof(OrderDetail.Order))]
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

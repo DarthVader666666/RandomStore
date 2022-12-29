@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RandomStoreRepo.Migrations
+namespace RandomStore.Repository.Migrations
 {
     /// <inheritdoc />
     public partial class initial : Migration
@@ -18,8 +18,8 @@ namespace RandomStoreRepo.Migrations
                     CategoryID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CategoryName = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
-                    Description = table.Column<string>(type: "ntext", nullable: false),
-                    Picture = table.Column<byte[]>(type: "image", nullable: false)
+                    Description = table.Column<string>(type: "varchar", nullable: false),
+                    Picture = table.Column<byte[]>(type: "image", nullable: true)
                 },
                 constraints: table =>
                 {
