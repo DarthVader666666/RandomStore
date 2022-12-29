@@ -11,7 +11,7 @@ using RandomStore.Services.Models.ProductModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+//builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 switch (builder.Configuration["Repository"].ToUpper())
 {

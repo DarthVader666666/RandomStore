@@ -7,10 +7,10 @@ namespace RandomStore.Services.ProductService
 {
     public class ProductService : IProductService
     {
-        private readonly ProductRepository _repo;
+        private readonly IRepository<Product> _repo;
         private IMapper _mapper;
 
-        public ProductService(ProductRepository repo, IMapper mapper)
+        public ProductService(IRepository<Product> repo, IMapper mapper)
         {
             _repo = repo is null ? throw new ArgumentNullException() : repo;
             _mapper = mapper is null ? throw new ArgumentNullException() : mapper;
@@ -18,9 +18,15 @@ namespace RandomStore.Services.ProductService
 
         public async Task<int> CreateProductAsync(ProductCreateModel productModel)
         {
+            if (productModel.QuantityPerUnit is null)
+            {
+                throw new ArgumentException();
+            }
+
             try
             {
                 var product = _mapper.Map<Product>(productModel);
+
                 await _repo.CreateAsync(product);
                 await _repo.SaveAsync();
                 return product.ProductId;

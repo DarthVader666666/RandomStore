@@ -8,7 +8,7 @@ namespace RandomStore.Repository.Repositories
 {
     public interface IRepository<T> where T: class
     {
-        Task<IEnumerable<T>> GetAllAsync();
+        IAsyncEnumerable<T> GetAllAsync();
         Task<T> GetItemAsync(int id);
         Task<int> CreateAsync(T item);
         Task<bool> UpdateAsync(T item);

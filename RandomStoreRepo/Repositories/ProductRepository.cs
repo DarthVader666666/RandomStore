@@ -1,4 +1,5 @@
-﻿using RandomStoreRepo;
+﻿using Microsoft.EntityFrameworkCore;
+using RandomStoreRepo;
 using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Repositories
@@ -20,17 +21,34 @@ namespace RandomStore.Repository.Repositories
 
         public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+
+            if (product is null)
+            {
+                return false;
+            }
+            else
+            {
+                _context.Products.Remove(product);
+                return true;
+            }
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async IAsyncEnumerable<Product> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var products = _context.Products.AsAsyncEnumerable<Product>();
+
+            await foreach (var item in products)
+            {
+                yield return item;
+            }
         }
 
-        public async Task<Product> GetItemAsync(int id)
+        public async Task<Product?> GetItemAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+
+            return product;
         }
 
         public async Task<int> SaveAsync()
@@ -41,7 +59,17 @@ namespace RandomStore.Repository.Repositories
 
         public async Task<bool> UpdateAsync(Product item)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == item.ProductId);
+
+            if (product is null)
+            {
+                return false;
+            }
+            else
+            { 
+                _context.Products.Entry(item).State = EntityState.Modified;
+                return true;
+            }
         }
     }
 }
