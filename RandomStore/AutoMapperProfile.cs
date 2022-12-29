@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using RandomStore.Application.Models.ProductModels;
+using RandomStore.Services.Models.ProductModels;
 using RandomStoreRepo.Entities;
 
 namespace RandomStore.Application

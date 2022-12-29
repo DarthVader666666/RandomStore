@@ -1,28 +1,28 @@
-﻿using RandomStoreRepo;
+﻿using AutoMapper;
+using RandomStore.Repository.Repositories;
+using RandomStore.Services.Models.ProductModels;
 using RandomStoreRepo.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RandomStore.Services.ProductService
 {
     public class ProductService : IProductService
     {
-        private readonly RandomStoreOneDbContext _context;
+        private readonly ProductRepository _repo;
+        private IMapper _mapper;
 
-        public ProductService(RandomStoreOneDbContext context)
+        public ProductService(ProductRepository repo, IMapper mapper)
         {
-            this._context = context is not null ? context : throw new ArgumentNullException();
+            _repo = repo is null ? throw new ArgumentNullException() : repo;
+            _mapper = mapper is null ? throw new ArgumentNullException() : mapper;
         }
 
-        public async Task<int> CreateProductAsync(Product product)
+        public async Task<int> CreateProductAsync(ProductCreateModel productModel)
         {
             try
             {
-                await this._context.Products.AddAsync(product);
-                await this._context.SaveChangesAsync();
+                var product = _mapper.Map<Product>(productModel);
+                await _repo.CreateAsync(product);
+                await _repo.SaveAsync();
                 return product.ProductId;
             }
             catch
@@ -51,7 +51,7 @@ namespace RandomStore.Services.ProductService
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateProductAsync(Product product, int id)
+        public async Task<bool> UpdateProductAsync(ProductUpdateModel product, int id)
         {
             throw new NotImplementedException();
         }

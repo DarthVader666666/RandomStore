@@ -1,10 +1,11 @@
-﻿using RandomStoreRepo.Entities;
+﻿using RandomStore.Services.Models.ProductModels;
+using RandomStoreRepo.Entities;
 
 namespace RandomStore.Services
 {
     public interface IProductService
     {
-        Task<int> CreateProductAsync(Product product);
+        Task<int> CreateProductAsync(ProductCreateModel productModel);
 
         Task<IEnumerable<Product>> GetAllProductsAsync();
 
@@ -12,7 +13,7 @@ namespace RandomStore.Services
 
         Task<Product> GetProductByNameAsync(string name);
 
-        Task<bool> UpdateProductAsync(Product product, int id);
+        Task<bool> UpdateProductAsync(ProductUpdateModel productModel, int id);
 
         Task<bool> DeleteProductAsync(int id);
     }
