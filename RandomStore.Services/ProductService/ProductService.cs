@@ -8,12 +8,14 @@ namespace RandomStore.Services.ProductService
     public class ProductService : IProductService
     {
         private readonly IRepository<Product> _repo;
-        private IMapper _mapper;
+        private IMapper _createMapper;
+        private IMapper _updateMapper;
 
-        public ProductService(IRepository<Product> repo, IMapper mapper)
+        public ProductService(IRepository<Product> repo, IMapper createMapper, IMapper updateMapper)
         {
             _repo = repo is null ? throw new ArgumentNullException() : repo;
-            _mapper = mapper is null ? throw new ArgumentNullException() : mapper;
+            _createMapper = createMapper is null ? throw new ArgumentNullException() : createMapper;
+            _updateMapper = updateMapper is null ? throw new ArgumentNullException() : updateMapper;
         }
 
         public async Task<int> CreateProductAsync(ProductCreateModel productModel)
@@ -25,10 +27,9 @@ namespace RandomStore.Services.ProductService
 
             try
             {
-                var product = _mapper.Map<Product>(productModel);
+                var product = _createMapper.Map<Product>(productModel);
 
                 await _repo.CreateAsync(product);
-                await _repo.SaveAsync();
                 return product.ProductId;
             }
             catch
@@ -39,27 +40,63 @@ namespace RandomStore.Services.ProductService
 
         public async Task<bool> DeleteProductAsync(int id)
         {
-            throw new NotImplementedException();
+            bool result;
+
+            try 
+            {
+                result = await _repo.DeleteAsync(id);
+            }
+            catch
+            {
+                throw new InvalidOperationException();
+            }
+
+            return result;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public IAsyncEnumerable<Product> GetAllProductsAsync()
         {
-            throw new NotImplementedException();
+            return _repo.GetAllAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            if (id < 1)
+            { 
+                throw new ArgumentException(nameof(id));
+            }
+
+            try
+            {
+                var product = await _repo.GetItemAsync(id);
+                return product;
+            }
+            catch
+            { 
+                throw new InvalidOperationException();
+            }
         }
 
-        public async Task<Product> GetProductByNameAsync(string name)
+        public async Task<bool> UpdateProductAsync(ProductUpdateModel productUpdate, int id)
         {
-            throw new NotImplementedException();
-        }
+            if (id < 1)
+            {
+                throw new ArgumentException(nameof(id));
+            }
 
-        public async Task<bool> UpdateProductAsync(ProductUpdateModel product, int id)
-        {
-            throw new NotImplementedException();
+            bool result;
+
+            try
+            {
+                var product = _updateMapper.Map<Product>(productUpdate);
+                result = await _repo.UpdateAsync(product);
+            }
+            catch
+            { 
+                throw new InvalidOperationException();
+            }
+            
+            return result;
         }
     }
 }

@@ -16,6 +16,7 @@ namespace RandomStore.Repository.Repositories
         public async Task<int> CreateAsync(Product product)
         {
             await _context.Products.AddAsync(product);
+            await SaveAsync();
             return product.ProductId;
         }
 
@@ -30,13 +31,14 @@ namespace RandomStore.Repository.Repositories
             else
             {
                 _context.Products.Remove(product);
+                await SaveAsync();
                 return true;
             }
         }
 
         public async IAsyncEnumerable<Product> GetAllAsync()
         {
-            var products = _context.Products.AsAsyncEnumerable<Product>();
+            var products = _context.Products;
 
             await foreach (var item in products)
             {
@@ -68,6 +70,7 @@ namespace RandomStore.Repository.Repositories
             else
             { 
                 _context.Products.Entry(item).State = EntityState.Modified;
+                await SaveAsync();
                 return true;
             }
         }

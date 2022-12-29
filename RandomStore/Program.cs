@@ -8,6 +8,7 @@ using RandomStore.Services.ProductService;
 using RandomStore.Repository.Repositories;
 using RandomStoreRepo.Entities;
 using RandomStore.Services.Models.ProductModels;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,10 @@ switch (builder.Configuration["Repository"].ToUpper())
                 new ProductService(new ProductRepository(
                     provider.GetService<RandomStoreOneDbContext>()!), 
                     new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<ProductCreateModel, Product>()))));
+                    config.CreateMap<ProductCreateModel, Product>())),
+                    new Mapper(new MapperConfiguration(config =>
+                    config.CreateMap<ProductUpdateModel, Product>())
+                    )));
             
             break;
     }
