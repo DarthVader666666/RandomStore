@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RandomStore.Services;
 using RandomStore.Services.Models.ProductModels;
-using RandomStoreRepo.Entities;
 
 namespace RandomStore.Application.Controllers
 {
@@ -23,13 +22,13 @@ namespace RandomStore.Application.Controllers
 
             if (result > 0)
             {
-                return Ok($"Product id={result} created!");
+                return Ok();
             }
 
             return BadRequest();
         }
 
-        [HttpGet("get")]
+        [HttpGet("get/all")]
         public IActionResult GetAllProducts()
         {
             var products = _service.GetAllProductsAsync();

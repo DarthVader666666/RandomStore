@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using RandomStoreRepo;
 using AutoMapper;
 using RandomStore.Services;
 using RandomStore.Services.ProductService;
 using RandomStore.Repository.Repositories;
 using RandomStoreRepo.Entities;
 using RandomStore.Services.Models.ProductModels;
+using RandomStore.Repository.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +43,11 @@ app.UseEndpoints(endpoints =>
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+            options.RoutePrefix = string.Empty;
+        });
         endpoints.MapSwagger();
     }
     else

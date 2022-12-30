@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RandomStoreRepo;
+using RandomStore.Repository.Context;
 using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Repositories
