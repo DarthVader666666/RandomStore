@@ -1,18 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using RandomStoreRepo;
 using AutoMapper;
-using RandomStore.Application;
-using Swashbuckle.AspNetCore.Swagger;
 using RandomStore.Services;
 using RandomStore.Services.ProductService;
 using RandomStore.Repository.Repositories;
 using RandomStoreRepo.Entities;
 using RandomStore.Services.Models.ProductModels;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
-
-//builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 switch (builder.Configuration["Repository"].ToUpper())
 {
@@ -23,7 +18,7 @@ switch (builder.Configuration["Repository"].ToUpper())
                 options.UseSqlServer(builder.Configuration.GetConnectionString("RandomStoreOne")));
 
             builder.Services.AddScoped<IProductService, ProductService>(provider =>
-                new ProductService(new ProductRepository(
+                new ProductService(new RandomStoreProductRepository(
                     provider.GetService<RandomStoreOneDbContext>()!), 
                     new Mapper(new MapperConfiguration(config =>
                     config.CreateMap<ProductCreateModel, Product>())),
@@ -36,6 +31,7 @@ switch (builder.Configuration["Repository"].ToUpper())
 }
 
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -43,7 +39,16 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllers();
+    if (app.Configuration["StartSwagger"] == "true")
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        endpoints.MapSwagger();
+    }
+    else
+    { 
+        endpoints.MapControllers();
+    }
 });
 
 app.Run();

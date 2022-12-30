@@ -4,13 +4,13 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Repositories
 {
-    public class ProductRepository : IRepository<Product>
+    public class RandomStoreProductRepository : IProductRepository
     {
         RandomStoreOneDbContext _context;
 
-        public ProductRepository(RandomStoreOneDbContext context)
+        public RandomStoreProductRepository(RandomStoreOneDbContext context)
         {
-            _context = context is null ? throw new ArgumentNullException() : context;
+            _context = context;
         }
 
         public async Task<int> CreateAsync(Product product)
@@ -46,17 +46,11 @@ namespace RandomStore.Repository.Repositories
             }
         }
 
-        public async Task<Product?> GetItemAsync(int id)
+        public async Task<Product> GetItemAsync(int id)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
 
             return product;
-        }
-
-        public async Task<int> SaveAsync()
-        {
-            var result = await _context.SaveChangesAsync();
-            return result;
         }
 
         public async Task<bool> UpdateAsync(Product item)
@@ -73,6 +67,12 @@ namespace RandomStore.Repository.Repositories
                 await SaveAsync();
                 return true;
             }
+        }
+
+        private async Task<int> SaveAsync()
+        {
+            var result = await _context.SaveChangesAsync();
+            return result;
         }
     }
 }

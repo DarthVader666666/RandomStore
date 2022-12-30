@@ -7,15 +7,15 @@ namespace RandomStore.Services.ProductService
 {
     public class ProductService : IProductService
     {
-        private readonly IRepository<Product> _repo;
+        private readonly IProductRepository _repo;
         private IMapper _createMapper;
         private IMapper _updateMapper;
 
-        public ProductService(IRepository<Product> repo, IMapper createMapper, IMapper updateMapper)
+        public ProductService(IProductRepository repo, IMapper createMapper, IMapper updateMapper)
         {
-            _repo = repo is null ? throw new ArgumentNullException() : repo;
-            _createMapper = createMapper is null ? throw new ArgumentNullException() : createMapper;
-            _updateMapper = updateMapper is null ? throw new ArgumentNullException() : updateMapper;
+            _repo = repo;
+            _createMapper = createMapper;
+            _updateMapper = updateMapper;
         }
 
         public async Task<int> CreateProductAsync(ProductCreateModel productModel)
@@ -59,7 +59,7 @@ namespace RandomStore.Services.ProductService
             return _repo.GetAllAsync();
         }
 
-        public async Task<Product?> GetProductByIdAsync(int id)
+        public async Task<Product> GetProductByIdAsync(int id)
         {
             if (id < 1)
             { 

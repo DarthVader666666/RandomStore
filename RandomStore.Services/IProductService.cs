@@ -9,7 +9,7 @@ namespace RandomStore.Services
 
         IAsyncEnumerable<Product> GetAllProductsAsync();
 
-        Task<Product?> GetProductByIdAsync(int id);
+        Task<Product> GetProductByIdAsync(int id);
 
         Task<bool> UpdateProductAsync(ProductUpdateModel productModel, int id);
 

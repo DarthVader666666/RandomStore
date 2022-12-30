@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Repositories
 {
-    public interface IRepository<T> where T: class
+    public interface IProductRepository
     {
-        IAsyncEnumerable<T> GetAllAsync();
-        Task<T?> GetItemAsync(int id);
-        Task<int> CreateAsync(T item);
-        Task<bool> UpdateAsync(T item);
+        IAsyncEnumerable<Product> GetAllAsync();
+        Task<Product> GetItemAsync(int id);
+        Task<int> CreateAsync(Product item);
+        Task<bool> UpdateAsync(Product item);
         Task<bool> DeleteAsync(int id);
-        Task<int> SaveAsync();
     }
 }

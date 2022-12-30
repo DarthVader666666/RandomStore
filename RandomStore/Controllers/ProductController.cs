@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RandomStore.Services;
 using RandomStore.Services.Models.ProductModels;
+using RandomStoreRepo.Entities;
 
 namespace RandomStore.Application.Controllers
 {
@@ -12,7 +13,7 @@ namespace RandomStore.Application.Controllers
 
         public ProductController(IProductService service)
         {
-            this._service = service is null ? throw new ArgumentNullException() : service;
+            _service = service;
         }
 
         [HttpPost("post")]
@@ -26,6 +27,14 @@ namespace RandomStore.Application.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpGet("get")]
+        public IActionResult GetAllProducts()
+        {
+            var products = _service.GetAllProductsAsync();
+
+            return Ok(products);
         }
     }
 }
