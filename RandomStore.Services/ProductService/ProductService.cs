@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using RandomStore.Repository.Repositories.ProductRepositories;
 using RandomStore.Services.Models.ProductModels;
 using RandomStoreRepo.Entities;
@@ -10,32 +11,39 @@ namespace RandomStore.Services.ProductService
         private readonly IProductRepository _repo;
         private IMapper _createMapper;
         private IMapper _updateMapper;
+        private readonly ILogger _logger;
 
-        public ProductService(IProductRepository repo, IMapper createMapper, IMapper updateMapper)
+        public ProductService(IProductRepository repo, IMapper createMapper, IMapper updateMapper, ILogger logger)
         {
             _repo = repo;
             _createMapper = createMapper;
             _updateMapper = updateMapper;
+            _logger = logger;
         }
 
         public async Task<int> CreateProductAsync(ProductCreateModel productModel)
         {
             if (productModel.QuantityPerUnit is null)
             {
-                throw new ArgumentException();
+                _logger.LogError("Parameter is null", null);
+                return 0;
             }
 
             try
             {
+                var i = 1 / 0;
+
                 var product = _createMapper.Map<Product>(productModel);
 
                 await _repo.CreateAsync(product);
                 return product.ProductId;
             }
-            catch
+            catch(Exception e)
             {
-                throw new InvalidOperationException();
+                _logger.LogError(e.Message, null);
             }
+
+            return 0;
         }
 
         public async Task<bool> DeleteProductAsync(int id)

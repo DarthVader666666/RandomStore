@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using RandomStore.Repository.Repositories.CategoryRepositories;
 using RandomStore.Services.Models.CategoryModels;
 using RandomStoreRepo.Entities;
@@ -10,12 +11,14 @@ namespace RandomStore.Services.CategoryService
         private readonly ICategoryRepository _repo;
         private IMapper _createMapper;
         private IMapper _updateMapper;
+        private readonly ILogger _logger;
 
-        public CategoryService(ICategoryRepository repo, IMapper createMapper, IMapper updateMapper) 
+        public CategoryService(ICategoryRepository repo, IMapper createMapper, IMapper updateMapper, ILogger logger) 
         { 
             _repo = repo;
             _createMapper = createMapper;
             _updateMapper = updateMapper;
+            _logger = logger;
         }
 
         public async Task<int> CreateCategoryAsync(CategoryCreateModel categoryModel)

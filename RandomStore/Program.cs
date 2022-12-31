@@ -9,8 +9,17 @@ using RandomStore.Repository.Repositories.ProductRepositories;
 using RandomStore.Services.CategoryService;
 using RandomStore.Services.Models.CategoryModels;
 using RandomStore.Repository.Repositories.CategoryRepositories;
+using RandomStore.Application.Loggers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var loggerFactory = LoggerFactory.Create(logBuilder =>
+{
+    logBuilder.AddFile(Path.Combine(Directory.GetCurrentDirectory(), "errors.txt"));
+    logBuilder.AddFilter("System", LogLevel.Error);
+});
+
+var logger = loggerFactory.CreateLogger("ServerErrorLogger");
 
 switch (builder.Configuration["Repository"].ToUpper())
 {
@@ -22,12 +31,11 @@ switch (builder.Configuration["Repository"].ToUpper())
 
             builder.Services.AddScoped<IProductService, ProductService>(provider =>
                 new ProductService(new RandomStoreProductRepository(
-                    provider.GetService<RandomStoreOneDbContext>()), 
+                    provider.GetService<RandomStoreOneDbContext>()),
                     new Mapper(new MapperConfiguration(config =>
                     config.CreateMap<ProductCreateModel, Product>())),
                     new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<ProductUpdateModel, Product>())
-                    )));
+                    config.CreateMap<ProductUpdateModel, Product>())), logger));
 
             builder.Services.AddScoped<ICategoryService, CategoryService>(provider =>
                 new CategoryService(new RandomStoreCategoryRepository(
@@ -35,9 +43,7 @@ switch (builder.Configuration["Repository"].ToUpper())
                     new Mapper(new MapperConfiguration(config =>
                     config.CreateMap<CategoryCreateModel, Category>())),
                     new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<CategoryUpdateModel, Category>())
-                    )));
-            
+                    config.CreateMap<CategoryUpdateModel, Category>())), logger));
             break;
     }
 }
