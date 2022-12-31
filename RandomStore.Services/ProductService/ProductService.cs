@@ -25,13 +25,14 @@ namespace RandomStore.Services.ProductService
         {
             if (productModel.QuantityPerUnit is null)
             {
-                _logger.LogError("Parameter is null", null);
+                _logger.LogError(GenerateDateString() + "Parameter is null");
                 return 0;
             }
 
             try
             {
-                var i = 1 / 0;
+                var a = 0;
+                var i = 1 / a;
 
                 var product = _createMapper.Map<Product>(productModel);
 
@@ -40,7 +41,7 @@ namespace RandomStore.Services.ProductService
             }
             catch(Exception e)
             {
-                _logger.LogError(e.Message, null);
+                _logger.LogError(GenerateDateString() + e.Message);
             }
 
             return 0;
@@ -54,9 +55,9 @@ namespace RandomStore.Services.ProductService
             {
                 result = await _repo.DeleteAsync(id);
             }
-            catch
+            catch (Exception e)
             {
-                throw new InvalidOperationException();
+                _logger.LogError(GenerateDateString() + e.Message);
             }
 
             return result;
@@ -79,9 +80,9 @@ namespace RandomStore.Services.ProductService
                 var product = await _repo.GetItemAsync(id);
                 return product;
             }
-            catch
-            { 
-                throw new InvalidOperationException();
+            catch (Exception e)
+            {
+                _logger.LogError(GenerateDateString() + e.Message);
             }
         }
 
@@ -92,19 +93,25 @@ namespace RandomStore.Services.ProductService
                 throw new ArgumentException(nameof(id));
             }
 
-            bool result;
+            bool result = false;
 
             try
             {
                 var product = _updateMapper.Map<Product>(productUpdate);
                 result = await _repo.UpdateAsync(product, id);
             }
-            catch
-            { 
-                throw new InvalidOperationException();
+            catch(Exception e)
+            {
+                _logger.LogError(GenerateDateString() + e.Message);
             }
             
             return result;
+        }
+
+        private string GenerateDateString()
+        {
+            var dateNow = DateTime.Now;
+            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + ": ";
         }
     }
 }

@@ -29,9 +29,9 @@ namespace RandomStore.Services.CategoryService
             {
                 await _repo.CreateAsync(category);               
             }
-            catch 
+            catch (Exception e)
             {
-            
+                _logger.LogError(GenerateDateString() + e.Message);
             }
 
             return category.CategoryId;
@@ -45,9 +45,9 @@ namespace RandomStore.Services.CategoryService
             {
                 result = await _repo.DeleteAsync(id);
             }
-            catch
+            catch (Exception e)
             {
-
+                _logger.LogError(GenerateDateString() + e.Message);
             }
 
             return result;
@@ -55,13 +55,30 @@ namespace RandomStore.Services.CategoryService
 
         public IAsyncEnumerable<Category> GetAllCategorysAsync()
         {
-            return _repo.GetAllAsync();
+            try
+            {
+                return _repo.GetAllAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(GenerateDateString() + e.Message);
+            }
+
+            return null;
         }
 
         public async Task<Category> GetCategoryByIdAsync(int id)
         {
-            var category = await _repo.GetItemAsync(id);
-            return category;
+            try
+            {
+                return await _repo.GetItemAsync(id);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(GenerateDateString() + e.Message);
+            }
+
+            return null;
         }
 
         public async Task<bool> UpdateCategoryAsync(CategoryUpdateModel categoryModel, int id)
@@ -73,9 +90,9 @@ namespace RandomStore.Services.CategoryService
             {
                 result = await _repo.UpdateAsync(category, id);
             }
-            catch
+            catch (Exception e)
             {
-
+                _logger.LogError(GenerateDateString() + e.Message);
             }
 
             return result;            
@@ -89,12 +106,18 @@ namespace RandomStore.Services.CategoryService
             {
                 result = await _repo.UploadPicture(stream, id);
             }
-            catch
+            catch (Exception e)
             {
-
+                _logger.LogError(GenerateDateString() + e.Message);
             }
 
             return result;
+        }
+
+        private string GenerateDateString()
+        {
+            var dateNow = DateTime.Now;
+            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + ": ";
         }
     }
 }
