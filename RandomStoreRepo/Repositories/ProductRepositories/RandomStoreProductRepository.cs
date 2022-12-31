@@ -63,27 +63,30 @@ namespace RandomStore.Repository.Repositories.ProductRepositories
         public async Task<bool> UpdateAsync(Product item, int id)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == item.CategoryId);
 
-            if (product is null)
+            if (product == null || category == null)
             {
                 return false;
             }
             else
             {
-                //item.ProductId = product.ProductId;
                 try
                 {
-                    var cat = _context.Products.ToList();
-                    var a = cat.FirstOrDefault(c => c.CategoryId == 1);
+                    product.ProductName = item.ProductName;
+                    product.CategoryId = item.CategoryId;
+                    product.QuantityPerUnit = item.QuantityPerUnit;
+                    product.UnitsOnOrder = item.UnitsOnOrder;
+                    product.UnitsInStock = item.UnitsInStock;
+
+                    _context.Products.Entry(product).State= EntityState.Modified;
+                    await SaveAsync();
                 }
                 catch(Exception e)
                 { 
                     Console.WriteLine(e.Message);
                 }
 
-                var r  = _context.Products.Entry(item);
-                r.State= EntityState.Modified;
-                await SaveAsync();
                 return true;
             }
         }

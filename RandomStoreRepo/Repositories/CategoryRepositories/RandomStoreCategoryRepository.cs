@@ -49,7 +49,6 @@ namespace RandomStore.Repository.Repositories.CategoryRepositories
         public async Task<Category> GetItemAsync(int id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
-
             return category;
         }
 
@@ -62,7 +61,10 @@ namespace RandomStore.Repository.Repositories.CategoryRepositories
                 return false;
             }
 
-            _context.Entry(item).State= EntityState.Modified;
+            category.CategoryName = item.CategoryName;
+            category.Description = item.Description;
+
+            _context.Entry(category).State = EntityState.Modified;
             await SaveAsync();
 
             return true;
@@ -81,9 +83,9 @@ namespace RandomStore.Repository.Repositories.CategoryRepositories
             {
                 await stream.CopyToAsync(memory);
                 category.Picture = memory.ToArray();
+                _context.Entry(category).State = EntityState.Modified;
+                await SaveAsync();
             }
-
-            await SaveAsync();
 
             return true;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RandomStore.Services.Models.CategoryModels;
 using RandomStore.Services;
+using RandomStore.Application.Models;
 
 namespace RandomStore.Application.Controllers
 {
@@ -18,9 +19,9 @@ namespace RandomStore.Application.Controllers
         [HttpPost("post")]
         public async Task<IActionResult> PostCategory([FromBody] CategoryCreateModel category)
         {
-            var result = await _service.CreateCategoryAsync(category);
+            var id = await _service.CreateCategoryAsync(category);
 
-            if (result > 0)
+            if (id > 0)
             {
                 return Ok();
             }
@@ -63,11 +64,11 @@ namespace RandomStore.Application.Controllers
         }
 
         [HttpPatch("upload/{id:int}")]
-        public async Task<IActionResult> UploadImage([FromForm] IFormFile image, [FromRoute] int id)
+        public async Task<IActionResult> UploadImage([FromForm] FileModel image, [FromRoute] int id)
         {
             bool result = false;
 
-            using (var stream = image.OpenReadStream())
+            using (var stream = image.file.OpenReadStream())
             { 
                 result = await _service.UploadPictureAsync(stream, id);
             }

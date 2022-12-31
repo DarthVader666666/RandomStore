@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace RandomStore.Services.Models.ProductModels
+﻿namespace RandomStore.Services.Models.ProductModels
 {
     public class ProductCreateModel
     {
