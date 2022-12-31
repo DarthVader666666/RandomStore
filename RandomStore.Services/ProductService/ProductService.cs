@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using RandomStore.Repository.Repositories;
+using RandomStore.Repository.Repositories.ProductRepositories;
 using RandomStore.Services.Models.ProductModels;
 using RandomStoreRepo.Entities;
 
@@ -89,7 +89,7 @@ namespace RandomStore.Services.ProductService
             try
             {
                 var product = _updateMapper.Map<Product>(productUpdate);
-                result = await _repo.UpdateAsync(product);
+                result = await _repo.UpdateAsync(product, id);
             }
             catch
             { 

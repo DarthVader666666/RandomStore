@@ -35,5 +35,44 @@ namespace RandomStore.Application.Controllers
 
             return Ok(products);
         }
+
+        [HttpGet("get/{id:int}")]
+        public async Task<IActionResult> GetProduct([FromRoute] int id)
+        {
+            var product = await _service.GetProductByIdAsync(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
+        }
+
+        [HttpPut("update/{id:int}")]
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateModel product, [FromRoute] int id)
+        {
+            var result = await _service.UpdateProductAsync(product, id);
+
+            if (result)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
+        [HttpDelete("delete/{id:int}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        { 
+            var result = await _service.DeleteProductAsync(id);
+
+            if(result)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
+        }
     }
 }
