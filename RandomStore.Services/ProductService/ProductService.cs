@@ -31,9 +31,6 @@ namespace RandomStore.Services.ProductService
 
             try
             {
-                var a = 0;
-                var i = 1 / a;
-
                 var product = _createMapper.Map<Product>(productModel);
 
                 await _repo.CreateAsync(product);
@@ -49,7 +46,7 @@ namespace RandomStore.Services.ProductService
 
         public async Task<bool> DeleteProductAsync(int id)
         {
-            bool result;
+            bool result = false;
 
             try 
             {
@@ -71,8 +68,9 @@ namespace RandomStore.Services.ProductService
         public async Task<Product> GetProductByIdAsync(int id)
         {
             if (id < 1)
-            { 
-                throw new ArgumentException(nameof(id));
+            {
+                _logger.LogError(GenerateDateString() + "Wrong id.");
+                return null;
             }
 
             try
@@ -84,6 +82,8 @@ namespace RandomStore.Services.ProductService
             {
                 _logger.LogError(GenerateDateString() + e.Message);
             }
+
+            return null;
         }
 
         public async Task<bool> UpdateProductAsync(ProductUpdateModel productUpdate, int id)
