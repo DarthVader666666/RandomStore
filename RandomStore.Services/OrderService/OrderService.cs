@@ -115,7 +115,7 @@ namespace RandomStore.Services.OrderService
         private string GenerateDateString()
         {
             var dateNow = DateTime.Now;
-            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + ": ";
+            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + $": {this.GetType().Name} - ";
         }
     }
 }

@@ -4,7 +4,7 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Context
 {
-    internal class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
+    public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
     {
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
@@ -17,6 +17,8 @@ namespace RandomStore.Repository.Context
             builder.HasOne(od => od.Product)
                 .WithMany(p => p.OrderDetails)
                 .HasForeignKey(od => od.ProductId);
+
+            builder.Property(od => od.Quantity).HasDefaultValueSql("((0))");
         }
     }
 }
