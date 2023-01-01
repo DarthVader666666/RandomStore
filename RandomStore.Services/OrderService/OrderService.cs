@@ -58,7 +58,6 @@ namespace RandomStore.Services.OrderService
             }
 
             return result;
-
         }
 
         public IAsyncEnumerable<Order> GetAllOrdersAsync()
@@ -85,7 +84,6 @@ namespace RandomStore.Services.OrderService
             }
 
             return null;
-
         }
 
         public async Task<bool> UpdateOrderAsync(OrderUpdateModel orderModel, int id)
@@ -109,7 +107,6 @@ namespace RandomStore.Services.OrderService
             }
 
             return result;
-
         }
 
         private string GenerateDateString()
