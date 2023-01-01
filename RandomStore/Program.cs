@@ -10,8 +10,12 @@ using RandomStore.Services.CategoryService;
 using RandomStore.Services.Models.CategoryModels;
 using RandomStore.Repository.Repositories.CategoryRepositories;
 using RandomStore.Application.Loggers;
+using RandomStore.Services.OrderService;
+using RandomStore.Repository.Repositories.OrderRepositories;
+using RandomStore.Services.Models.OrderModels;
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var loggerFactory = LoggerFactory.Create(logBuilder =>
 {
@@ -29,6 +33,9 @@ switch (builder.Configuration["Repository"].ToUpper())
                 AddDbContext<RandomStoreOneDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("RandomStoreOne")));
 
+            //builder.Services.AddScoped<IProductRepository, RandomStoreProductRepository>();
+            //builder.Services.AddScoped<IProductService, ProductService>();
+
             builder.Services.AddScoped<IProductService, ProductService>(provider =>
                 new ProductService(new RandomStoreProductRepository(
                     provider.GetService<RandomStoreOneDbContext>()),
@@ -44,6 +51,15 @@ switch (builder.Configuration["Repository"].ToUpper())
                     config.CreateMap<CategoryCreateModel, Category>())),
                     new Mapper(new MapperConfiguration(config =>
                     config.CreateMap<CategoryUpdateModel, Category>())), logger));
+
+            builder.Services.AddScoped<IOrderService, OrderService>(provider =>
+                new OrderService(new RandomStoreOrderRepository(
+                    provider.GetService<RandomStoreOneDbContext>()), 
+                    new Mapper(new MapperConfiguration(config =>
+                    config.CreateMap<OrderCreateModel, Order>())),
+                    new Mapper(new MapperConfiguration(config =>
+                    config.CreateMap<OrderUpdateModel, Order>())), logger));
+
             break;
     }
 }

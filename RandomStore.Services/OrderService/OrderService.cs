@@ -1,19 +1,19 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using RandomStore.Repository.Repositories.ProductRepositories;
-using RandomStore.Services.Models.ProductModels;
+using RandomStore.Repository.Repositories.OrderRepositories;
+using RandomStore.Services.Models.OrderModels;
 using RandomStoreRepo.Entities;
 
-namespace RandomStore.Services.ProductService
+namespace RandomStore.Services.OrderService
 {
-    public class ProductService : IProductService
+    public class OrderService : IOrderService
     {
-        private readonly IProductRepository _repo;
+        private readonly IOrderRepository _repo;
         private IMapper _createMapper;
         private IMapper _updateMapper;
         private readonly ILogger _logger;
 
-        public ProductService(IProductRepository repo, IMapper createMapper, IMapper updateMapper, ILogger logger)
+        public OrderService(IOrderRepository repo, IMapper createMapper, IMapper updateMapper, ILogger logger) 
         {
             _repo = repo;
             _createMapper = createMapper;
@@ -21,9 +21,9 @@ namespace RandomStore.Services.ProductService
             _logger = logger;
         }
 
-        public async Task<int> CreateProductAsync(ProductCreateModel productModel)
+        public async Task<int> CreateOrderAsync(OrderCreateModel orderModel)
         {
-            if (productModel.QuantityPerUnit is null)
+            if (orderModel.ShipCountry == null || orderModel.ShipCity == null || orderModel.ShipAddress == null)
             {
                 _logger.LogError(GenerateDateString() + "Parameter is null");
                 return 0;
@@ -31,12 +31,12 @@ namespace RandomStore.Services.ProductService
 
             try
             {
-                var product = _createMapper.Map<Product>(productModel);
+                var order = _createMapper.Map<Order>(orderModel);
 
-                await _repo.CreateAsync(product);
-                return product.ProductId;
+                await _repo.CreateAsync(order);
+                return order.OrderId;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError(GenerateDateString() + e.Message);
             }
@@ -44,11 +44,11 @@ namespace RandomStore.Services.ProductService
             return 0;
         }
 
-        public async Task<bool> DeleteProductAsync(int id)
+        public async Task<bool> DeleteOrderAsync(int id)
         {
             bool result = false;
 
-            try 
+            try
             {
                 result = await _repo.DeleteAsync(id);
             }
@@ -58,14 +58,15 @@ namespace RandomStore.Services.ProductService
             }
 
             return result;
+
         }
 
-        public IAsyncEnumerable<Product> GetAllProductsAsync()
+        public IAsyncEnumerable<Order> GetAllOrdersAsync()
         {
             return _repo.GetAllAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<Order> GetOrderByIdAsync(int id)
         {
             if (id < 1)
             {
@@ -84,9 +85,10 @@ namespace RandomStore.Services.ProductService
             }
 
             return null;
+
         }
 
-        public async Task<bool> UpdateProductAsync(ProductUpdateModel productUpdate, int id)
+        public async Task<bool> UpdateOrderAsync(OrderUpdateModel orderModel, int id)
         {
             if (id < 1)
             {
@@ -98,15 +100,16 @@ namespace RandomStore.Services.ProductService
 
             try
             {
-                var product = _updateMapper.Map<Product>(productUpdate);
-                result = await _repo.UpdateAsync(product, id);
+                var order = _updateMapper.Map<Order>(orderModel);
+                result = await _repo.UpdateAsync(order, id);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError(GenerateDateString() + e.Message);
             }
-            
+
             return result;
+
         }
 
         private string GenerateDateString()

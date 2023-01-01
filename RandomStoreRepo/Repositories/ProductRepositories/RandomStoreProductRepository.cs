@@ -69,26 +69,17 @@ namespace RandomStore.Repository.Repositories.ProductRepositories
             {
                 return false;
             }
-            else
-            {
-                try
-                {
-                    product.ProductName = item.ProductName;
-                    product.CategoryId = item.CategoryId;
-                    product.QuantityPerUnit = item.QuantityPerUnit;
-                    product.UnitsOnOrder = item.UnitsOnOrder;
-                    product.UnitsInStock = item.UnitsInStock;
 
-                    _context.Products.Entry(product).State= EntityState.Modified;
-                    await SaveAsync();
-                }
-                catch(Exception e)
-                { 
-                    Console.WriteLine(e.Message);
-                }
+            product.ProductName = item.ProductName;
+            product.CategoryId = item.CategoryId;
+            product.QuantityPerUnit = item.QuantityPerUnit;
+            product.UnitsOnOrder = item.UnitsOnOrder;
+            product.UnitsInStock = item.UnitsInStock;
 
-                return true;
-            }
+            _context.Products.Entry(product).State = EntityState.Modified;
+            await SaveAsync();
+
+            return true;            
         }
 
         private async Task<int> SaveAsync()
