@@ -13,15 +13,8 @@ namespace RandomStore.Repository.Repositories.OrderRepositories
             _context = context;
         }
 
-        public async Task<int> CreateAsync(Order item)
+        public async Task<int> CreateAsync(Order order)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(c => c.OrderId == item.OrderId);
-
-            if (order == null)
-            {
-                return 0;
-            }
-
             await _context.Orders.AddAsync(order);
             await SaveAsync();
             return order.OrderId;

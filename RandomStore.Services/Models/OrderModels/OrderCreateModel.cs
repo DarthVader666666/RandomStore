@@ -6,5 +6,6 @@
         public string ShipAddress { get; set; }
         public string ShipCity { get; set; }
         public string ShipCountry { get; set; }
+        public int[] ProductIds { get; set; }
     }
 }
