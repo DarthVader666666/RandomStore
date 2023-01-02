@@ -13,19 +13,16 @@ namespace RandomStore.Services.OrderDetailService
         private readonly IOrderDetailRepository _orderDetailRepo;
         private readonly IOrderRepository _orderRepo;
         private readonly IProductRepository _productRepo;
-        private IMapper _createMapper;
-        private IMapper _updateMapper;
+        private IMapper _mapper;
         private readonly ILogger _logger;
 
-        public OrderDetailService(IOrderDetailRepository orderDetailRepo,
-            IOrderRepository orderRepo, IProductRepository productRepo, IMapper createMapper,
-            IMapper updateMapper, ILogger logger)
+        public OrderDetailService(IOrderDetailRepository orderDetailRepo, IOrderRepository orderRepo, 
+            IProductRepository productRepo, IMapper mapper, ILogger logger)
         { 
             _orderDetailRepo = orderDetailRepo;
             _orderRepo = orderRepo;
             _productRepo = productRepo;
-            _createMapper = createMapper;
-            _updateMapper = updateMapper;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -39,7 +36,7 @@ namespace RandomStore.Services.OrderDetailService
 
             try
             {
-                var orderDetail = _createMapper.Map<OrderDetail>(orderDetailModel);
+                var orderDetail = _mapper.Map<OrderDetail>(orderDetailModel);
 
                 await _orderDetailRepo.CreateAsync(orderDetail);
                 return orderDetail.OrderId;
@@ -96,7 +93,8 @@ namespace RandomStore.Services.OrderDetailService
 
         }
 
-        public async Task<bool> UpdateOrderDetailAsync(OrderDetailUpdateModel orderDetailModel, int orderId, int productId)
+        public async Task<bool> UpdateOrderDetailAsync(OrderDetailUpdateModel orderDetailModel, 
+            int orderId, int productId)
         {
             if (orderId < 1)
             {
@@ -117,7 +115,7 @@ namespace RandomStore.Services.OrderDetailService
 
             try
             {
-                var orderDetail = _updateMapper.Map<OrderDetail>(orderDetailModel);
+                var orderDetail = _mapper.Map<OrderDetail>(orderDetailModel);
                 result = await _orderDetailRepo.UpdateAsync(orderDetail, orderId, productId);
             }
             catch (Exception e)

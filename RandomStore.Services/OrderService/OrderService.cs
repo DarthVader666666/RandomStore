@@ -9,15 +9,13 @@ namespace RandomStore.Services.OrderService
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _repo;
-        private IMapper _createMapper;
-        private IMapper _updateMapper;
+        private IMapper _mapper;
         private readonly ILogger _logger;
 
-        public OrderService(IOrderRepository repo, IMapper createMapper, IMapper updateMapper, ILogger logger) 
+        public OrderService(IOrderRepository repo, IMapper mapper, ILogger logger) 
         {
             _repo = repo;
-            _createMapper = createMapper;
-            _updateMapper = updateMapper;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -31,7 +29,7 @@ namespace RandomStore.Services.OrderService
 
             try
             {
-                var order = _createMapper.Map<Order>(orderModel);
+                var order = _mapper.Map<Order>(orderModel);
 
                 await _repo.CreateAsync(order);
                 return order.OrderId;
@@ -98,7 +96,7 @@ namespace RandomStore.Services.OrderService
 
             try
             {
-                var order = _updateMapper.Map<Order>(orderModel);
+                var order = _mapper.Map<Order>(orderModel);
                 result = await _repo.UpdateAsync(order, id);
             }
             catch (Exception e)

@@ -1,5 +1,4 @@
 ﻿using RandomStore.Services.Models.CategoryModels;
-using RandomStoreRepo.Entities;
 
 namespace RandomStore.Services
 {
@@ -7,9 +6,9 @@ namespace RandomStore.Services
     {
         Task<int> CreateCategoryAsync(CategoryCreateModel categoryModel);
 
-        IAsyncEnumerable<Category> GetAllCategorysAsync();
+        IAsyncEnumerable<CategoryGetModel> GetAllCategoriesAsync();
 
-        Task<Category> GetCategoryByIdAsync(int id);
+        Task<CategoryGetModel> GetCategoryByIdAsync(int id);
 
         Task<bool> UpdateCategoryAsync(CategoryUpdateModel categoryModel, int id);
 

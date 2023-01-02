@@ -9,15 +9,13 @@ namespace RandomStore.Services.ProductService
     public class ProductService : IProductService
     {
         private readonly IProductRepository _repo;
-        private IMapper _createMapper;
-        private IMapper _updateMapper;
+        private IMapper _mapper;
         private readonly ILogger _logger;
 
-        public ProductService(IProductRepository repo, IMapper createMapper, IMapper updateMapper, ILogger logger)
+        public ProductService(IProductRepository repo, IMapper mapper, ILogger logger)
         {
             _repo = repo;
-            _createMapper = createMapper;
-            _updateMapper = updateMapper;
+            _mapper = mapper;
             _logger = logger;
         }
 
@@ -31,7 +29,7 @@ namespace RandomStore.Services.ProductService
 
             try
             {
-                var product = _createMapper.Map<Product>(productModel);
+                var product = _mapper.Map<Product>(productModel);
 
                 await _repo.CreateAsync(product);
                 return product.ProductId;
@@ -98,7 +96,7 @@ namespace RandomStore.Services.ProductService
 
             try
             {
-                var product = _updateMapper.Map<Product>(productUpdate);
+                var product = _mapper.Map<Product>(productUpdate);
                 result = await _repo.UpdateAsync(product, id);
             }
             catch(Exception e)

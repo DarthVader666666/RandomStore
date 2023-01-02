@@ -11,8 +11,10 @@ namespace RandomStore.Application
         {
             CreateMap<ProductCreateModel, Product>();
             CreateMap<ProductUpdateModel, Product>();
+
             CreateMap<CategoryCreateModel, Category>();
             CreateMap<CategoryUpdateModel, Category>();
+            CreateMap<Category, CategoryGetModel>();
         }
     }
 }

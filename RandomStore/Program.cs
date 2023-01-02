@@ -17,9 +17,10 @@ using RandomStore.Services.OrderDetailService;
 using RandomStore.Repository.Repositories.OrderDetailsRepositories;
 using RandomStore.Services.Models.OrderDetailModels;
 using Microsoft.Extensions.DependencyInjection;
+using RandomStore.Application;
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var loggerFactory = LoggerFactory.Create(logBuilder =>
 {
@@ -44,25 +45,32 @@ switch (builder.Configuration["Repository"].ToUpper())
                 new ProductService(new RandomStoreProductRepository(
                     provider.GetService<RandomStoreOneDbContext>()),
                     new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<ProductCreateModel, Product>())),
-                    new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<ProductUpdateModel, Product>())), logger));
+                    {
+                        config.CreateMap<ProductCreateModel, Product>();
+                        config.CreateMap<ProductUpdateModel, Product>();
+                    })),
+                    logger));
 
             builder.Services.AddScoped<ICategoryService, CategoryService>(provider =>
                 new CategoryService(new RandomStoreCategoryRepository(
-                    provider.GetService<RandomStoreOneDbContext>()), 
+                    provider.GetService<RandomStoreOneDbContext>()),
                     new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<CategoryCreateModel, Category>())),
-                    new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<CategoryUpdateModel, Category>())), logger));
+                    {
+                        config.CreateMap<CategoryCreateModel, Category>();
+                        config.CreateMap<CategoryUpdateModel, Category>();
+                        config.CreateMap<Category, CategoryGetModel> ();
+                    })), 
+                    logger));
 
             builder.Services.AddScoped<IOrderService, OrderService>(provider =>
                 new OrderService(new RandomStoreOrderRepository(
                     provider.GetService<RandomStoreOneDbContext>()), 
                     new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<OrderCreateModel, Order>())),
-                    new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<OrderUpdateModel, Order>())), logger));
+                    {
+                        config.CreateMap<OrderCreateModel, Order>();
+                        config.CreateMap<OrderUpdateModel, Order>();
+                    })), 
+                    logger));
 
             builder.Services.AddScoped<IOrderDetailService, OrderDetailService>(provider =>
                 new OrderDetailService(new RandomStoreOrderDetailRepository(
@@ -70,9 +78,11 @@ switch (builder.Configuration["Repository"].ToUpper())
                     new RandomStoreOrderRepository(provider.GetService<RandomStoreOneDbContext>()),
                     new RandomStoreProductRepository(provider.GetService<RandomStoreOneDbContext>()),
                     new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<OrderDetailCreateModel, OrderDetail>())),
-                    new Mapper(new MapperConfiguration(config =>
-                    config.CreateMap<OrderDetailUpdateModel, OrderDetail>())), logger));
+                    {
+                        config.CreateMap<OrderDetailCreateModel, OrderDetail>();
+                        config.CreateMap<OrderDetailUpdateModel, OrderDetail>();
+                    })), 
+                    logger));
 
             break;
     }

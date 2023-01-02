@@ -9,21 +9,19 @@ namespace RandomStore.Services.CategoryService
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repo;
-        private IMapper _createMapper;
-        private IMapper _updateMapper;
+        private IMapper _mapper;
         private readonly ILogger _logger;
 
-        public CategoryService(ICategoryRepository repo, IMapper createMapper, IMapper updateMapper, ILogger logger) 
+        public CategoryService(ICategoryRepository repo, IMapper mapper, ILogger logger) 
         { 
             _repo = repo;
-            _createMapper = createMapper;
-            _updateMapper = updateMapper;
+            _mapper = mapper;
             _logger = logger;
         }
 
         public async Task<int> CreateCategoryAsync(CategoryCreateModel categoryModel)
         {
-            var category = _createMapper.Map<Category>(categoryModel);
+            var category = _mapper.Map<Category>(categoryModel);
 
             try
             {
@@ -53,11 +51,11 @@ namespace RandomStore.Services.CategoryService
             return result;
         }
 
-        public IAsyncEnumerable<Category> GetAllCategorysAsync()
+        public IAsyncEnumerable<CategoryGetModel> GetAllCategoriesAsync()
         {
             try
             {
-                return _repo.GetAllAsync();
+                return GetCategoriesCore();
             }
             catch (Exception e)
             {
@@ -65,13 +63,22 @@ namespace RandomStore.Services.CategoryService
             }
 
             return null;
+
+            async IAsyncEnumerable<CategoryGetModel> GetCategoriesCore()
+            {
+                await foreach (var item in _repo.GetAllAsync())
+                {
+                    yield return _mapper.Map<CategoryGetModel>(item);
+                }
+            }
         }
 
-        public async Task<Category> GetCategoryByIdAsync(int id)
+        public async Task<CategoryGetModel> GetCategoryByIdAsync(int id)
         {
             try
             {
-                return await _repo.GetItemAsync(id);
+                var category = await _repo.GetItemAsync(id);
+                return _mapper.Map<CategoryGetModel>(category);
             }
             catch (Exception e)
             {
@@ -83,7 +90,7 @@ namespace RandomStore.Services.CategoryService
 
         public async Task<bool> UpdateCategoryAsync(CategoryUpdateModel categoryModel, int id)
         {
-            var category = _updateMapper.Map<Category>(categoryModel);
+            var category = _mapper.Map<Category>(categoryModel);
             var result = false;
 
             try
