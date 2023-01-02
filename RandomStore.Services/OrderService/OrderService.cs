@@ -58,12 +58,29 @@ namespace RandomStore.Services.OrderService
             return result;
         }
 
-        public IAsyncEnumerable<Order> GetAllOrdersAsync()
+        public IAsyncEnumerable<OrderGetModel> GetAllOrdersAsync()
         {
-            return _repo.GetAllAsync();
+            try
+            {
+                return GetAllCore();
+            }
+            catch(Exception e) 
+            {
+                _logger.LogError($"{GenerateDateString() +  e.Message}");
+            }
+
+            return null;
+
+            async IAsyncEnumerable<OrderGetModel> GetAllCore()
+            {
+                await foreach (var item in _repo.GetAllAsync())
+                {
+                    yield return _mapper.Map<OrderGetModel>(item);
+                }
+            }
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id)
+        public async Task<OrderGetModel> GetOrderByIdAsync(int id)
         {
             if (id < 1)
             {
@@ -74,7 +91,7 @@ namespace RandomStore.Services.OrderService
             try
             {
                 var product = await _repo.GetItemAsync(id);
-                return product;
+                return _mapper.Map<OrderGetModel>(product);
             }
             catch (Exception e)
             {

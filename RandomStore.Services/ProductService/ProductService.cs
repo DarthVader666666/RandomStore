@@ -19,7 +19,7 @@ namespace RandomStore.Services.ProductService
             _logger = logger;
         }
 
-        public async Task<int> CreateProductAsync(ProductCreateModel productModel)
+        public async Task<int> CreateProductAsync(ProductCreateModel productModel, int categoryId)
         {
             if (productModel.QuantityPerUnit is null)
             {
@@ -30,7 +30,7 @@ namespace RandomStore.Services.ProductService
             try
             {
                 var product = _mapper.Map<Product>(productModel);
-
+                product.CategoryId = categoryId;
                 await _repo.CreateAsync(product);
                 return product.ProductId;
             }
@@ -58,12 +58,29 @@ namespace RandomStore.Services.ProductService
             return result;
         }
 
-        public IAsyncEnumerable<Product> GetAllProductsAsync()
+        public IAsyncEnumerable<ProductGetModel> GetAllProductsAsync()
         {
-            return _repo.GetAllAsync();
+            try
+            {
+                return GetAllCore();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(GenerateDateString() + e.Message);
+            }
+
+            return null;
+
+            async IAsyncEnumerable<ProductGetModel> GetAllCore()
+            {
+                await foreach (var item in _repo.GetAllAsync())
+                { 
+                    yield return _mapper.Map<ProductGetModel>(item);
+                }
+            }
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<ProductGetModel> GetProductByIdAsync(int id)
         {
             if (id < 1)
             {
@@ -74,7 +91,7 @@ namespace RandomStore.Services.ProductService
             try
             {
                 var product = await _repo.GetItemAsync(id);
-                return product;
+                return _mapper.Map<ProductGetModel>(product);
             }
             catch (Exception e)
             {

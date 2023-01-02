@@ -7,9 +7,9 @@ namespace RandomStore.Services
     {
         Task<int> CreateOrderAsync(OrderCreateModel orderModel);
 
-        IAsyncEnumerable<Order> GetAllOrdersAsync();
+        IAsyncEnumerable<OrderGetModel> GetAllOrdersAsync();
 
-        Task<Order> GetOrderByIdAsync(int id);
+        Task<OrderGetModel> GetOrderByIdAsync(int id);
 
         Task<bool> UpdateOrderAsync(OrderUpdateModel orderModel, int id);
 

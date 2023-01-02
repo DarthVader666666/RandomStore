@@ -18,9 +18,9 @@ using RandomStore.Repository.Repositories.OrderDetailsRepositories;
 using RandomStore.Services.Models.OrderDetailModels;
 using Microsoft.Extensions.DependencyInjection;
 using RandomStore.Application;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var loggerFactory = LoggerFactory.Create(logBuilder =>
 {
@@ -38,9 +38,6 @@ switch (builder.Configuration["Repository"].ToUpper())
                 AddDbContext<RandomStoreOneDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("RandomStoreOne")));
 
-            //builder.Services.AddScoped<IProductRepository, RandomStoreProductRepository>();
-            //builder.Services.AddScoped<IProductService, ProductService>();
-
             builder.Services.AddScoped<IProductService, ProductService>(provider =>
                 new ProductService(new RandomStoreProductRepository(
                     provider.GetService<RandomStoreOneDbContext>()),
@@ -48,6 +45,7 @@ switch (builder.Configuration["Repository"].ToUpper())
                     {
                         config.CreateMap<ProductCreateModel, Product>();
                         config.CreateMap<ProductUpdateModel, Product>();
+                        config.CreateMap<Product, ProductGetModel>();
                     })),
                     logger));
 
@@ -69,6 +67,7 @@ switch (builder.Configuration["Repository"].ToUpper())
                     {
                         config.CreateMap<OrderCreateModel, Order>();
                         config.CreateMap<OrderUpdateModel, Order>();
+                        config.CreateMap<Order, OrderGetModel>();
                     })), 
                     logger));
 
@@ -81,6 +80,7 @@ switch (builder.Configuration["Repository"].ToUpper())
                     {
                         config.CreateMap<OrderDetailCreateModel, OrderDetail>();
                         config.CreateMap<OrderDetailUpdateModel, OrderDetail>();
+                        config.CreateMap<OrderDetail, OrderDetailGetModel>();
                     })), 
                     logger));
 

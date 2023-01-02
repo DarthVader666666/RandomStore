@@ -1,7 +1,8 @@
 ﻿namespace RandomStore.Services.Models.OrderModels
 {
-    public class OrderUpdateModel
+    public class OrderGetModel
     {
+        public int OrderId { get; set; }
         public DateTime? OrderDate { get; set; }
         public string ShipAddress { get; set; }
         public string ShipCity { get; set; }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using RandomStore.Repository.Repositories.OrderDetailsRepositories;
 using RandomStore.Repository.Repositories.OrderRepositories;
 using RandomStore.Repository.Repositories.ProductRepositories;
+using RandomStore.Services.Models.CategoryModels;
 using RandomStore.Services.Models.OrderDetailModels;
 using RandomStoreRepo.Entities;
 
@@ -63,15 +64,31 @@ namespace RandomStore.Services.OrderDetailService
             }
 
             return result;
-
         }
 
-        public IAsyncEnumerable<OrderDetail> GetAllOrderDetailsAsync()
+        public IAsyncEnumerable<OrderDetailGetModel> GetAllOrderDetailsAsync()
         {
-            return _orderDetailRepo.GetAllAsync();
+            try
+            {
+                return GetAllOrderDetailsCore();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(GenerateDateString() + e.Message);
+            }
+
+            return null;
+
+            async IAsyncEnumerable<OrderDetailGetModel> GetAllOrderDetailsCore()
+            {
+                await foreach (var item in _orderDetailRepo.GetAllAsync())
+                {
+                    yield return _mapper.Map<OrderDetailGetModel>(item);
+                }
+            }
         }
 
-        public IAsyncEnumerable<OrderDetail> GetOrderDetailsByIdAsync(int orderId)
+        public IAsyncEnumerable<OrderDetailGetModel> GetOrderDetailsByIdAsync(int orderId)
         {
             if (orderId < 1)
             {
@@ -81,8 +98,7 @@ namespace RandomStore.Services.OrderDetailService
 
             try
             {
-                var orderDetails = _orderDetailRepo.GetItemsAsync(orderId);
-                return orderDetails;
+                return GetItemsCore();
             }
             catch (Exception e)
             {
@@ -91,6 +107,13 @@ namespace RandomStore.Services.OrderDetailService
 
             return null;
 
+            async IAsyncEnumerable<OrderDetailGetModel> GetItemsCore()
+            {
+                await foreach (var item in _orderDetailRepo.GetItemsAsync(orderId))
+                {
+                    yield return _mapper.Map<OrderDetailGetModel>(item);
+                }
+            }
         }
 
         public async Task<bool> UpdateOrderDetailAsync(OrderDetailUpdateModel orderDetailModel, 

@@ -16,9 +16,10 @@ namespace RandomStore.Application.Controllers
         }
 
         [HttpPost("post")]
-        public async Task<IActionResult> PostProduct([FromBody] ProductCreateModel product)
+        public async Task<IActionResult> PostProduct([FromBody] ProductCreateModel product, 
+            [FromQuery(Name = "categoryId")] int categoryId)
         {
-            var result = await _service.CreateProductAsync(product);
+            var result = await _service.CreateProductAsync(product, categoryId);
 
             if (result > 0)
             {
