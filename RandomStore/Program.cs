@@ -13,6 +13,10 @@ using RandomStore.Application.Loggers;
 using RandomStore.Services.OrderService;
 using RandomStore.Repository.Repositories.OrderRepositories;
 using RandomStore.Services.Models.OrderModels;
+using RandomStore.Services.OrderDetailService;
+using RandomStore.Repository.Repositories.OrderDetailsRepositories;
+using RandomStore.Services.Models.OrderDetailModels;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
@@ -59,6 +63,16 @@ switch (builder.Configuration["Repository"].ToUpper())
                     config.CreateMap<OrderCreateModel, Order>())),
                     new Mapper(new MapperConfiguration(config =>
                     config.CreateMap<OrderUpdateModel, Order>())), logger));
+
+            builder.Services.AddScoped<IOrderDetailService, OrderDetailService>(provider =>
+                new OrderDetailService(new RandomStoreOrderDetailRepository(
+                    provider.GetService<RandomStoreOneDbContext>()),
+                    new RandomStoreOrderRepository(provider.GetService<RandomStoreOneDbContext>()),
+                    new RandomStoreProductRepository(provider.GetService<RandomStoreOneDbContext>()),
+                    new Mapper(new MapperConfiguration(config =>
+                    config.CreateMap<OrderDetailCreateModel, OrderDetail>())),
+                    new Mapper(new MapperConfiguration(config =>
+                    config.CreateMap<OrderDetailUpdateModel, OrderDetail>())), logger));
 
             break;
     }
