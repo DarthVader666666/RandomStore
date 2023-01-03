@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using RandomStore.Repository.Repositories.OrderDetailsRepositories;
 using RandomStore.Repository.Repositories.OrderRepositories;
 using RandomStore.Repository.Repositories.ProductRepositories;
-using RandomStore.Services.Models.CategoryModels;
 using RandomStore.Services.Models.OrderDetailModels;
 using RandomStoreRepo.Entities;
 

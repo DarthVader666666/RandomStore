@@ -1,5 +1,4 @@
 ﻿using RandomStore.Services.Models.OrderModels;
-using RandomStoreRepo.Entities;
 
 namespace RandomStore.Services
 {

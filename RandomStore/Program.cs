@@ -16,9 +16,6 @@ using RandomStore.Services.Models.OrderModels;
 using RandomStore.Services.OrderDetailService;
 using RandomStore.Repository.Repositories.OrderDetailsRepositories;
 using RandomStore.Services.Models.OrderDetailModels;
-using Microsoft.Extensions.DependencyInjection;
-using RandomStore.Application;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
