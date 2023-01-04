@@ -15,10 +15,9 @@ namespace RandomStore.Application.Controllers
             _service = service;
         }
 
-        [HttpPost("post")]
-        public async Task<IActionResult> PostOrder([FromBody] OrderCreateModel order)
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] OrderCreateModel order)
         {
-            order.OrderDate = DateTime.Now;
             var result = await _service.CreateOrderAsync(order);
 
             if (result > 0)
@@ -29,16 +28,26 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpGet("get/all")]
-        public IActionResult GetAllOrders()
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAsync()
         {
             var orders = _service.GetAllOrdersAsync();
+
+            if (orders == null)
+            { 
+                return BadRequest();
+            }
+
+            if (await orders.CountAsync() == 0)
+            { 
+                return NotFound();
+            }
 
             return Ok(orders);
         }
 
-        [HttpGet("get/{id:int}")]
-        public async Task<IActionResult> GetOrder([FromRoute] int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
             var order = await _service.GetOrderByIdAsync(id);
 
@@ -50,12 +59,10 @@ namespace RandomStore.Application.Controllers
             return Ok(order);
         }
 
-        [HttpPut("update/{id:int}")]
-        public async Task<IActionResult> UpdateOrder([FromBody] OrderUpdateModel order, 
-            [FromQuery(Name = "day")]int day, [FromQuery(Name = "month")] int month, 
-            [FromQuery(Name = "year")] int year, [FromRoute] int id)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateAsync([FromBody] OrderUpdateModel order,
+            [FromRoute] int id)
         {
-            order.OrderDate = new DateTime(year, month, day);
             var result = await _service.UpdateOrderAsync(order, id);
 
             if (result)
@@ -66,8 +73,8 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("delete/{id:int}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
             var result = await _service.DeleteOrderAsync(id);
 

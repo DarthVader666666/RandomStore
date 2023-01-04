@@ -1,6 +1,6 @@
-﻿namespace RandomStore.Services.Models.OrderDetailModels
+﻿namespace RandomStore.Services.Models.OrderDetailsModels
 {
-    public class OrderDetailGetModel
+    public class OrderDetailsCreateModel
     {
         public int OrderId { get; set; }
         public int ProductId { get; set; }

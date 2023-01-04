@@ -1,4 +1,5 @@
-﻿using RandomStore.Services.Models.CategoryModels;
+﻿using Microsoft.AspNetCore.Http;
+using RandomStore.Services.Models.CategoryModels;
 
 namespace RandomStore.Services
 {
@@ -12,7 +13,7 @@ namespace RandomStore.Services
 
         Task<bool> UpdateCategoryAsync(CategoryUpdateModel categoryModel, int id);
 
-        Task<bool> UploadPictureAsync(Stream stream, int id);
+        Task<bool> UpdatePictureAsync(IFormFile formFile, int id);
 
         Task<bool> DeleteCategoryAsync(int id);
     }

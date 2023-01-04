@@ -3,20 +3,20 @@ using Microsoft.Extensions.Logging;
 using RandomStore.Repository.Repositories.OrderDetailsRepositories;
 using RandomStore.Repository.Repositories.OrderRepositories;
 using RandomStore.Repository.Repositories.ProductRepositories;
-using RandomStore.Services.Models.OrderDetailModels;
+using RandomStore.Services.Models.OrderDetailsModels;
 using RandomStoreRepo.Entities;
 
 namespace RandomStore.Services.OrderDetailService
 {
-    public class OrderDetailService : IOrderDetailService
+    public class OrderDetailsService : IOrderDetailsService
     {
         private readonly IOrderDetailRepository _orderDetailRepo;
         private readonly IOrderRepository _orderRepo;
         private readonly IProductRepository _productRepo;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public OrderDetailService(IOrderDetailRepository orderDetailRepo, IOrderRepository orderRepo, 
+        public OrderDetailsService(IOrderDetailRepository orderDetailRepo, IOrderRepository orderRepo, 
             IProductRepository productRepo, IMapper mapper, ILogger logger)
         { 
             _orderDetailRepo = orderDetailRepo;
@@ -26,32 +26,32 @@ namespace RandomStore.Services.OrderDetailService
             _logger = logger;
         }
 
-        public async Task<int> CreateOrderDetailAsync(OrderDetailCreateModel orderDetailModel)
+        public async Task<int> CreateOrderDetailsAsync(OrderDetailsCreateModel orderDetailModel)
         {
             if (orderDetailModel.Quantity <= 0)
             {
-                _logger.LogError(GenerateDateString() + "Wronq Quantity.");
+                _logger.LogError($"{GetType().Name}, Wrong Quantity.");
                 return 0;
             }
 
             try
             {
-                var orderDetail = _mapper.Map<OrderDetail>(orderDetailModel);
+                var orderDetail = _mapper.Map<OrderDetails>(orderDetailModel);
 
                 await _orderDetailRepo.CreateAsync(orderDetail);
                 return orderDetail.OrderId;
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return 0;
         }
 
-        public async Task<bool> DeleteOrderDetailAsync(int orderId, int productId)
+        public async Task<bool> DeleteOrderDetailsAsync(int orderId, int productId)
         {
-            bool result = false;
+            var result = false;
 
             try
             {
@@ -59,99 +59,64 @@ namespace RandomStore.Services.OrderDetailService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return result;
         }
 
-        public IAsyncEnumerable<OrderDetailGetModel> GetAllOrderDetailsAsync()
+        public async IAsyncEnumerable<OrderDetailsGetModel> GetAllOrderDetailsAsync()
         {
-            try
+            await foreach (var item in _orderDetailRepo.GetAll())
             {
-                return GetAllOrderDetailsCore();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(GenerateDateString() + e.Message);
-            }
-
-            return null;
-
-            async IAsyncEnumerable<OrderDetailGetModel> GetAllOrderDetailsCore()
-            {
-                await foreach (var item in _orderDetailRepo.GetAllAsync())
-                {
-                    yield return _mapper.Map<OrderDetailGetModel>(item);
-                }
+                yield return _mapper.Map<OrderDetailsGetModel>(item);
             }
         }
 
-        public IAsyncEnumerable<OrderDetailGetModel> GetOrderDetailsByIdAsync(int orderId)
+        public async IAsyncEnumerable<OrderDetailsGetModel> GetOrderDetailsByIdAsync(int orderId)
         {
             if (orderId < 1)
             {
-                _logger.LogError(GenerateDateString() + "Wrong id.");
-                return null;
+                _logger.LogError($"{GetType().Name}, Wrong id.");
             }
 
-            try
+            await foreach (var item in _orderDetailRepo.GetItems(orderId))
             {
-                return GetItemsCore();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(GenerateDateString() + e.Message);
-            }
-
-            return null;
-
-            async IAsyncEnumerable<OrderDetailGetModel> GetItemsCore()
-            {
-                await foreach (var item in _orderDetailRepo.GetItemsAsync(orderId))
-                {
-                    yield return _mapper.Map<OrderDetailGetModel>(item);
-                }
+                yield return _mapper.Map<OrderDetailsGetModel>(item);
             }
         }
 
-        public async Task<bool> UpdateOrderDetailAsync(OrderDetailUpdateModel orderDetailModel, 
-            int orderId, int productId)
+        public async Task<bool> UpdateOrderDetailsAsync(OrderDetailsUpdateModel orderDetailsModel)
         {
-            if (orderId < 1)
+            if (orderDetailsModel.OrderId < 1)
             {
-                _logger.LogError(GenerateDateString() + "Wrong Id.");
+                _logger.LogError($"{GetType().Name}, Wrong Id.");
                 return false;
             }
 
-            var order = await _orderRepo.GetItemAsync(orderId);
-            var product = await _productRepo.GetItemAsync(productId);
+            var order = await _orderRepo.GetItemAsync(orderDetailsModel.OrderId);
+            var product = await _productRepo.GetItemAsync(orderDetailsModel.ProductId);
 
             if (order == null || product == null)
             {
-                _logger.LogError(GenerateDateString() + "Wrong OrderId or ProductId.");
+                _logger.LogError($"{GetType().Name}, Wrong OrderId or ProductId.");
                 return false;
             }
 
-            bool result = false;
+            var result = false;
 
             try
             {
-                var orderDetail = _mapper.Map<OrderDetail>(orderDetailModel);
-                result = await _orderDetailRepo.UpdateAsync(orderDetail, orderId, productId);
+                var orderDetail = _mapper.Map<OrderDetails>(orderDetailsModel);
+                result = await _orderDetailRepo.UpdateAsync(orderDetail, orderDetailsModel.OrderId, 
+                    orderDetailsModel.ProductId);
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return result;
-        }
-
-        private string GenerateDateString()
-        {
-            var dateNow = DateTime.Now;
-            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + $": {this.GetType().Name} - ";
         }
     }
 }

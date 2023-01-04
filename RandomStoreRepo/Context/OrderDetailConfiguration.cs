@@ -4,9 +4,9 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Context
 {
-    public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
+    public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetails>
     {
-        public void Configure(EntityTypeBuilder<OrderDetail> builder)
+        public void Configure(EntityTypeBuilder<OrderDetails> builder)
         {
             builder.HasKey(od => new { od.OrderId, od.ProductId });
 

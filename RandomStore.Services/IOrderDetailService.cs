@@ -1,17 +1,17 @@
-﻿using RandomStore.Services.Models.OrderDetailModels;
+﻿using RandomStore.Services.Models.OrderDetailsModels;
 
 namespace RandomStore.Services
 {
-    public interface IOrderDetailService
+    public interface IOrderDetailsService
     {
-        Task<int> CreateOrderDetailAsync(OrderDetailCreateModel orderDetailModel);
+        Task<int> CreateOrderDetailsAsync(OrderDetailsCreateModel orderDetailModel);
 
-        IAsyncEnumerable<OrderDetailGetModel> GetAllOrderDetailsAsync();
+        IAsyncEnumerable<OrderDetailsGetModel> GetAllOrderDetailsAsync();
 
-        IAsyncEnumerable<OrderDetailGetModel> GetOrderDetailsByIdAsync(int orderId);
+        IAsyncEnumerable<OrderDetailsGetModel> GetOrderDetailsByIdAsync(int orderId);
 
-        Task<bool> UpdateOrderDetailAsync(OrderDetailUpdateModel orderDetailModel, int orderId, int productId);
+        Task<bool> UpdateOrderDetailsAsync(OrderDetailsUpdateModel orderDetailModel);
 
-        Task<bool> DeleteOrderDetailAsync(int orderId, int productId);
+        Task<bool> DeleteOrderDetailsAsync(int orderId, int productId);
     }
 }

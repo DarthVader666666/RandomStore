@@ -4,10 +4,10 @@ namespace RandomStore.Repository.Repositories.OrderDetailsRepositories
 {
     public interface IOrderDetailRepository
     {
-        IAsyncEnumerable<OrderDetail> GetAllAsync();
-        IAsyncEnumerable<OrderDetail> GetItemsAsync(int orderId);
-        Task<int> CreateAsync(OrderDetail item);
-        Task<bool> UpdateAsync(OrderDetail item, int orderId, int productId);
+        IAsyncEnumerable<OrderDetails> GetAll();
+        IAsyncEnumerable<OrderDetails> GetItems(int orderId);
+        Task<int> CreateAsync(OrderDetails item);
+        Task<bool> UpdateAsync(OrderDetails item, int orderId, int productId);
         Task<bool> DeleteAsync(int orderId, int productId);
     }
 }

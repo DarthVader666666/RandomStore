@@ -1,32 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RandomStore.Services;
-using RandomStore.Services.Models.OrderDetailModels;
+using RandomStore.Services.Models.OrderDetailsModels;
 
 namespace RandomStore.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderDetailController : ControllerBase
+    public class OrderDetailsController : ControllerBase
     {
-        private readonly IOrderDetailService _service;
+        private readonly IOrderDetailsService _service;
 
-        public OrderDetailController(IOrderDetailService service) 
+        public OrderDetailsController(IOrderDetailsService service)
         {
             _service = service;
         }
 
-        [HttpPost("post")]
-        public async Task<IActionResult> PostOrderDetail([FromQuery(Name = "quant")] int quant,
-            [FromQuery(Name = "orderId")] int orderId, [FromQuery(Name = "prodId")] int prodId)
+        [HttpPost]
+        public async Task<IActionResult> PostOrderDetail([FromBody] OrderDetailsCreateModel orderDetail)
         {
-            var orderDetail = new OrderDetailCreateModel
-            {
-                OrderId = orderId,
-                ProductId = prodId,
-                Quantity = quant
-            };
-
-            var result = await _service.CreateOrderDetailAsync(orderDetail);
+            var result = await _service.CreateOrderDetailsAsync(orderDetail);
 
             if (result > 0)
             {
@@ -36,33 +28,46 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpGet("get/all")]
-        public IActionResult GetAllOrderDetails()
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAsync()
         {
-            var orders = _service.GetAllOrderDetailsAsync();
+            var orderDetails = _service.GetAllOrderDetailsAsync();
 
-            return Ok(orders);
-        }
+            if (orderDetails == null)
+            {
+                return BadRequest();
+            }
 
-        [HttpGet("get/{id:int}")]
-        public IActionResult GetOrderDetail([FromRoute] int id)
-        {
-            var order = _service.GetOrderDetailsByIdAsync(id);
-
-            if (order == null)
+            if (await orderDetails.CountAsync() == 0)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(orderDetails);
         }
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateOrderDetail([FromQuery(Name = "quant")] int quant,
-            [FromQuery(Name = "orderId")] int orderId, [FromQuery(Name = "prodId")] int prodId)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetByOrderIdAsync([FromRoute] int id)
         {
-            var order = new OrderDetailUpdateModel { Quantity = quant };
-            var result = await _service.UpdateOrderDetailAsync(order, orderId, prodId);
+            var orderDetails = _service.GetOrderDetailsByIdAsync(id);
+
+            if (orderDetails == null)
+            {
+                return BadRequest();
+            }
+
+            if (await orderDetails.CountAsync() == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(orderDetails);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrderDetail(OrderDetailsUpdateModel orderDetailsUpdateModel)
+        {
+            var result = await _service.UpdateOrderDetailsAsync(orderDetailsUpdateModel);
 
             if (result)
             {
@@ -72,11 +77,10 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteOrderDetail([FromQuery(Name = "orderId")] int ordeId,
-            [FromQuery(Name = "prodId")] int prodId)
+        [HttpDelete("order/{orderId:int}/product/{productId:int}")]
+        public async Task<IActionResult> DeleteOrderDetail([FromRoute] int ordeId, [FromRoute] int productId)
         {
-            var result = await _service.DeleteOrderDetailAsync(ordeId, prodId);
+            var result = await _service.DeleteOrderDetailsAsync(ordeId, productId);
 
             if (result)
             {

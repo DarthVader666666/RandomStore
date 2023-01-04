@@ -9,7 +9,7 @@ namespace RandomStore.Services.ProductService
     public class ProductService : IProductService
     {
         private readonly IProductRepository _repo;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         public ProductService(IProductRepository repo, IMapper mapper, ILogger logger)
@@ -21,9 +21,9 @@ namespace RandomStore.Services.ProductService
 
         public async Task<int> CreateProductAsync(ProductCreateModel productModel, int categoryId)
         {
-            if (productModel.QuantityPerUnit is null)
+            if (productModel.QuantityPerUnit == null)
             {
-                _logger.LogError(GenerateDateString() + "Parameter is null");
+                _logger.LogError("Parameter is null");
                 return 0;
             }
 
@@ -34,9 +34,9 @@ namespace RandomStore.Services.ProductService
                 await _repo.CreateAsync(product);
                 return product.ProductId;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return 0;
@@ -44,7 +44,7 @@ namespace RandomStore.Services.ProductService
 
         public async Task<bool> DeleteProductAsync(int id)
         {
-            bool result = false;
+            var result = false;
 
             try 
             {
@@ -52,31 +52,17 @@ namespace RandomStore.Services.ProductService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return result;
         }
 
-        public IAsyncEnumerable<ProductGetModel> GetAllProductsAsync()
+        public async IAsyncEnumerable<ProductGetModel> GetAllProductsAsync()
         {
-            try
+            await foreach (var item in _repo.GetAll())
             {
-                return GetAllCore();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(GenerateDateString() + e.Message);
-            }
-
-            return null;
-
-            async IAsyncEnumerable<ProductGetModel> GetAllCore()
-            {
-                await foreach (var item in _repo.GetAllAsync())
-                { 
-                    yield return _mapper.Map<ProductGetModel>(item);
-                }
+                yield return _mapper.Map<ProductGetModel>(item);
             }
         }
 
@@ -84,7 +70,7 @@ namespace RandomStore.Services.ProductService
         {
             if (id < 1)
             {
-                _logger.LogError(GenerateDateString() + "Wrong id.");
+                _logger.LogError("Wrong id.");
                 return null;
             }
 
@@ -95,7 +81,7 @@ namespace RandomStore.Services.ProductService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return null;
@@ -105,29 +91,23 @@ namespace RandomStore.Services.ProductService
         {
             if (id < 1)
             {
-                _logger.LogError(GenerateDateString() + "Wrong Id.");
+                _logger.LogError("Wrong Id.");
                 return false;
             }
 
-            bool result = false;
+            var result = false;
 
             try
             {
                 var product = _mapper.Map<Product>(productUpdate);
                 result = await _repo.UpdateAsync(product, id);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
             
             return result;
-        }
-
-        private string GenerateDateString()
-        {
-            var dateNow = DateTime.Now;
-            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + ": ";
         }
     }
 }

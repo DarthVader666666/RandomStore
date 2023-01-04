@@ -2,11 +2,13 @@
 {
     public class FileLoggerProvider : ILoggerProvider
     {
-        string path;
+        private readonly string path;
+
         public FileLoggerProvider(string path)
         {
             this.path = path;
         }
+
         public ILogger CreateLogger(string categoryName)
         {
             return new FileLogger(path);

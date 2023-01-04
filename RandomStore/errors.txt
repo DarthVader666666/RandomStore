@@ -1,1 +1,6 @@
 02.01.2023 11:05: OrderDetailService - An error occurred while saving the entity changes. See the inner exception for details.
+03.01.2023 20:51: Wrong OrderId or ProductId.
+03.01.2023 21:38: OrderDetailsService, Wrong id.
+03.01.2023 21:39: OrderDetailsService, Wrong id.
+03.01.2023 21:45: OrderDetailsService, Wrong id.
+03.01.2023 21:48: OrderDetailsService, Wrong id.

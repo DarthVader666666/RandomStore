@@ -15,11 +15,10 @@ namespace RandomStore.Application.Controllers
             _service = service;
         }
 
-        [HttpPost("post")]
-        public async Task<IActionResult> PostProduct([FromBody] ProductCreateModel product, 
-            [FromQuery(Name = "categoryId")] int categoryId)
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync([FromBody] ProductCreateModel product)
         {
-            var result = await _service.CreateProductAsync(product, categoryId);
+            var result = await _service.CreateProductAsync(product, product.CategoryId);
 
             if (result > 0)
             {
@@ -29,16 +28,26 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpGet("get/all")]
-        public IActionResult GetAllProducts()
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAsync()
         {
             var products = _service.GetAllProductsAsync();
+
+            if (products == null)
+            {
+                return BadRequest();
+            }
+
+            if (await products.CountAsync() == 0)
+            {
+                return NotFound();
+            }
 
             return Ok(products);
         }
 
-        [HttpGet("get/{id:int}")]
-        public async Task<IActionResult> GetProduct([FromRoute] int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
             var product = await _service.GetProductByIdAsync(id);
 
@@ -50,8 +59,9 @@ namespace RandomStore.Application.Controllers
             return Ok(product);
         }
 
-        [HttpPut("update/{id:int}")]
-        public async Task<IActionResult> UpdateProduct([FromBody] ProductUpdateModel product, [FromRoute] int id)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateAsync([FromBody] ProductUpdateModel product, 
+            [FromRoute] int id)
         {
             var result = await _service.UpdateProductAsync(product, id);
 
@@ -63,12 +73,12 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("delete/{id:int}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         { 
             var result = await _service.DeleteProductAsync(id);
 
-            if(result)
+            if (result)
             {
                 return Ok();
             }

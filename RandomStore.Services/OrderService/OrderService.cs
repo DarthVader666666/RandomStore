@@ -9,7 +9,7 @@ namespace RandomStore.Services.OrderService
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _repo;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         public OrderService(IOrderRepository repo, IMapper mapper, ILogger logger) 
@@ -23,20 +23,20 @@ namespace RandomStore.Services.OrderService
         {
             if (orderModel.ShipCountry == null || orderModel.ShipCity == null || orderModel.ShipAddress == null)
             {
-                _logger.LogError(GenerateDateString() + "Parameter is null");
+                _logger.LogError("Parameter is null");
                 return 0;
             }
 
             try
             {
                 var order = _mapper.Map<Order>(orderModel);
-
                 await _repo.CreateAsync(order);
+
                 return order.OrderId;
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return 0;
@@ -52,31 +52,17 @@ namespace RandomStore.Services.OrderService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return result;
         }
 
-        public IAsyncEnumerable<OrderGetModel> GetAllOrdersAsync()
+        public async IAsyncEnumerable<OrderGetModel> GetAllOrdersAsync()
         {
-            try
+            await foreach (var item in _repo.GetAll())
             {
-                return GetAllCore();
-            }
-            catch(Exception e) 
-            {
-                _logger.LogError($"{GenerateDateString() +  e.Message}");
-            }
-
-            return null;
-
-            async IAsyncEnumerable<OrderGetModel> GetAllCore()
-            {
-                await foreach (var item in _repo.GetAllAsync())
-                {
-                    yield return _mapper.Map<OrderGetModel>(item);
-                }
+                yield return _mapper.Map<OrderGetModel>(item);
             }
         }
 
@@ -84,7 +70,7 @@ namespace RandomStore.Services.OrderService
         {
             if (id < 1)
             {
-                _logger.LogError(GenerateDateString() + "Wrong id.");
+                _logger.LogError("Wrong id.");
                 return null;
             }
 
@@ -95,7 +81,7 @@ namespace RandomStore.Services.OrderService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return null;
@@ -105,7 +91,7 @@ namespace RandomStore.Services.OrderService
         {
             if (id < 1)
             {
-                _logger.LogError(GenerateDateString() + "Wrong Id.");
+                _logger.LogError("Wrong Id.");
                 return false;
             }
 
@@ -118,16 +104,10 @@ namespace RandomStore.Services.OrderService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, e.Message);
             }
 
             return result;
-        }
-
-        private string GenerateDateString()
-        {
-            var dateNow = DateTime.Now;
-            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + $": {this.GetType().Name} - ";
         }
     }
 }

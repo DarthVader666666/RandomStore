@@ -4,11 +4,11 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Repositories.CategoryRepositories
 {
-    public class RandomStoreCategoryRepository : ICategoryRepository
+    public class CategoryRepository : ICategoryRepository
     {
         private readonly RandomStoreOneDbContext _context;
 
-        public RandomStoreCategoryRepository(RandomStoreOneDbContext context)
+        public CategoryRepository(RandomStoreOneDbContext context)
         {
             _context = context;
         }
@@ -36,15 +36,7 @@ namespace RandomStore.Repository.Repositories.CategoryRepositories
             return true;
         }
 
-        public async IAsyncEnumerable<Category> GetAllAsync()
-        {
-            var categories = _context.Categories.AsAsyncEnumerable();
-
-            await foreach (var item in categories)
-            { 
-                yield return item;
-            }
-        }
+        public IAsyncEnumerable<Category> GetAll() => _context.Categories.AsAsyncEnumerable();
 
         public async Task<Category> GetItemAsync(int id)
         {
@@ -70,7 +62,7 @@ namespace RandomStore.Repository.Repositories.CategoryRepositories
             return true;
         }
 
-        public async Task<bool> UploadPicture(Stream stream, int id)
+        public async Task<bool> SavePictureAsync(Stream stream, int id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == id);
 

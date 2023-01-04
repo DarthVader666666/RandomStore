@@ -4,18 +4,19 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Repositories.ProductRepositories
 {
-    public class RandomStoreProductRepository : IProductRepository
+    public class ProductRepository : IProductRepository
     {
-        RandomStoreOneDbContext _context;
+        private readonly RandomStoreOneDbContext _context;
 
-        public RandomStoreProductRepository(RandomStoreOneDbContext context)
+        public ProductRepository(RandomStoreOneDbContext context)
         {
             _context = context;
         }
 
         public async Task<int> CreateAsync(Product product)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == product.CategoryId);
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(c => c.CategoryId == product.CategoryId);
 
             if (category == null)
             {
@@ -24,6 +25,7 @@ namespace RandomStore.Repository.Repositories.ProductRepositories
 
             await _context.Products.AddAsync(product);
             await SaveAsync();
+
             return product.ProductId;
         }
 
@@ -35,23 +37,14 @@ namespace RandomStore.Repository.Repositories.ProductRepositories
             {
                 return false;
             }
-            else
-            {
-                _context.Products.Remove(product);
-                await SaveAsync();
-                return true;
-            }
+
+            _context.Products.Remove(product);
+            await SaveAsync();
+
+            return true;
         }
 
-        public async IAsyncEnumerable<Product> GetAllAsync()
-        {
-            var products = _context.Products;
-
-            await foreach (var item in products)
-            {
-                yield return item;
-            }
-        }
+        public IAsyncEnumerable<Product> GetAll() => _context.Products.AsAsyncEnumerable();
 
         public async Task<Product> GetItemAsync(int id)
         {

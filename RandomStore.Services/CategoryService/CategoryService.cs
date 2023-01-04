@@ -3,13 +3,14 @@ using Microsoft.Extensions.Logging;
 using RandomStore.Repository.Repositories.CategoryRepositories;
 using RandomStore.Services.Models.CategoryModels;
 using RandomStoreRepo.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace RandomStore.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repo;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
         public CategoryService(ICategoryRepository repo, IMapper mapper, ILogger logger) 
@@ -29,7 +30,7 @@ namespace RandomStore.Services.CategoryService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return category.CategoryId;
@@ -45,31 +46,17 @@ namespace RandomStore.Services.CategoryService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return result;
         }
 
-        public IAsyncEnumerable<CategoryGetModel> GetAllCategoriesAsync()
+        public async IAsyncEnumerable<CategoryGetModel> GetAllCategoriesAsync()
         {
-            try
+            await foreach (var item in _repo.GetAll())
             {
-                return GetCategoriesCore();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(GenerateDateString() + e.Message);
-            }
-
-            return null;
-
-            async IAsyncEnumerable<CategoryGetModel> GetCategoriesCore()
-            {
-                await foreach (var item in _repo.GetAllAsync())
-                {
-                    yield return _mapper.Map<CategoryGetModel>(item);
-                }
+                yield return _mapper.Map<CategoryGetModel>(item);
             }
         }
 
@@ -82,7 +69,7 @@ namespace RandomStore.Services.CategoryService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return null;
@@ -99,32 +86,29 @@ namespace RandomStore.Services.CategoryService
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return result;            
         }
 
-        public async Task<bool> UploadPictureAsync(Stream stream, int id)
+        public async Task<bool> UpdatePictureAsync(IFormFile formFile, int id)
         {
             var result = false;
 
             try
             {
-                result = await _repo.UploadPicture(stream, id);
+                using (var stream = formFile.OpenReadStream())
+                {
+                    result = await _repo.SavePictureAsync(stream, id);
+                }
             }
             catch (Exception e)
             {
-                _logger.LogError(GenerateDateString() + e.Message);
+                _logger.LogError(e, $"{GetType().Name}, {e.Message}");
             }
 
             return result;
-        }
-
-        private string GenerateDateString()
-        {
-            var dateNow = DateTime.Now;
-            return dateNow.ToShortDateString() + " " + dateNow.ToShortTimeString() + ": ";
         }
     }
 }

@@ -4,11 +4,11 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Repositories.OrderRepositories
 {
-    public class RandomStoreOrderRepository : IOrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly RandomStoreOneDbContext _context;
 
-        public RandomStoreOrderRepository(RandomStoreOneDbContext context)
+        public OrderRepository(RandomStoreOneDbContext context)
         {
             _context = context;
         }
@@ -28,23 +28,14 @@ namespace RandomStore.Repository.Repositories.OrderRepositories
             {
                 return false;
             }
-            else
-            {
-                _context.Orders.Remove(order);
-                await SaveAsync();
-                return true;
-            }
+
+            _context.Orders.Remove(order);
+            await SaveAsync();
+
+            return true;
         }
 
-        public async IAsyncEnumerable<Order> GetAllAsync()
-        {
-            var orders = _context.Orders;
-
-            await foreach (var item in orders)
-            {
-                yield return item;
-            }
-        }
+        public IAsyncEnumerable<Order> GetAll() => _context.Orders.AsAsyncEnumerable();
 
         public async Task<Order> GetItemAsync(int id)
         {

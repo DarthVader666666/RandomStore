@@ -16,8 +16,8 @@ namespace RandomStore.Application.Controllers
             _categoryService = categoryService;
         }
 
-        [HttpPost("post")]
-        public async Task<IActionResult> PostCategory([FromBody] CategoryCreateModel category)
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync([FromBody] CategoryCreateModel category)
         {
             var id = await _categoryService.CreateCategoryAsync(category);
 
@@ -29,16 +29,26 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpGet("get/all")]
-        public IActionResult GetAllCategorys()
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllAsync()
         {
-            var products = _categoryService.GetAllCategoriesAsync();
+            var categories = _categoryService.GetAllCategoriesAsync();
 
-            return Ok(products);
+            if (categories == null)
+            {
+                return BadRequest();
+            }
+
+            if (await categories.CountAsync() == 0)
+            { 
+                return NotFound();
+            }
+
+            return Ok(categories);
         }
 
-        [HttpGet("get/{id:int}")]
-        public async Task<IActionResult> GetCategory([FromRoute] int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
 
@@ -50,8 +60,9 @@ namespace RandomStore.Application.Controllers
             return Ok(category);
         }
 
-        [HttpPut("update/{id:int}")]
-        public async Task<IActionResult> UpdateCategory([FromBody] CategoryUpdateModel product, [FromRoute] int id)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateAsync([FromBody] CategoryUpdateModel product, 
+            [FromRoute] int id)
         {
             var result = await _categoryService.UpdateCategoryAsync(product, id);
 
@@ -63,15 +74,10 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpPatch("upload/{id:int}")]
-        public async Task<IActionResult> UploadImage([FromForm] FileModel image, [FromRoute] int id)
+        [HttpPatch("save-image/{id:int}")]
+        public async Task<IActionResult> SaveImageAsync([FromForm] FileModel image, [FromRoute] int id)
         {
-            bool result = false;
-
-            using (var stream = image.file.OpenReadStream())
-            { 
-                result = await _categoryService.UploadPictureAsync(stream, id);
-            }
+            var result = await _categoryService.UpdatePictureAsync(image.File, id);
 
             if (result)
             {
@@ -81,8 +87,8 @@ namespace RandomStore.Application.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("delete/{id:int}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
             var result = await _categoryService.DeleteCategoryAsync(id);
 
