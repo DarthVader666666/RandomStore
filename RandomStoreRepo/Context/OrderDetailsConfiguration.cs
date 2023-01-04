@@ -4,7 +4,7 @@ using RandomStoreRepo.Entities;
 
 namespace RandomStore.Repository.Context
 {
-    public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetails>
+    public class OrderDetailsConfiguration : IEntityTypeConfiguration<OrderDetails>
     {
         public void Configure(EntityTypeBuilder<OrderDetails> builder)
         {
