@@ -50,6 +50,11 @@ namespace RandomStore.Application.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
             var category = await _categoryService.GetCategoryByIdAsync(id);
 
             if (category == null)
@@ -64,6 +69,11 @@ namespace RandomStore.Application.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody] CategoryUpdateModel product, 
             [FromRoute] int id)
         {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
             var result = await _categoryService.UpdateCategoryAsync(product, id);
 
             if (result)
@@ -77,6 +87,11 @@ namespace RandomStore.Application.Controllers
         [HttpPatch("save-image/{id:int}")]
         public async Task<IActionResult> SaveImageAsync([FromForm] FileModel image, [FromRoute] int id)
         {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
             var result = await _categoryService.UpdatePictureAsync(image.File, id);
 
             if (result)
@@ -90,6 +105,11 @@ namespace RandomStore.Application.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
             var result = await _categoryService.DeleteCategoryAsync(id);
 
             if (result)

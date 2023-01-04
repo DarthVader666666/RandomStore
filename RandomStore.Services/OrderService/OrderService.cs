@@ -68,12 +68,6 @@ namespace RandomStore.Services.OrderService
 
         public async Task<OrderGetModel> GetOrderByIdAsync(int id)
         {
-            if (id < 1)
-            {
-                _logger.LogError("Wrong id.");
-                return null;
-            }
-
             try
             {
                 var product = await _repo.GetItemAsync(id);
@@ -89,12 +83,6 @@ namespace RandomStore.Services.OrderService
 
         public async Task<bool> UpdateOrderAsync(OrderUpdateModel orderModel, int id)
         {
-            if (id < 1)
-            {
-                _logger.LogError("Wrong Id.");
-                return false;
-            }
-
             bool result = false;
 
             try

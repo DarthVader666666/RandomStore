@@ -75,11 +75,6 @@ namespace RandomStore.Services.OrderDetailService
 
         public async IAsyncEnumerable<OrderDetailsGetModel> GetOrderDetailsByIdAsync(int orderId)
         {
-            if (orderId < 1)
-            {
-                _logger.LogError($"{GetType().Name}, Wrong id.");
-            }
-
             await foreach (var item in _orderDetailRepo.GetItems(orderId))
             {
                 yield return _mapper.Map<OrderDetailsGetModel>(item);

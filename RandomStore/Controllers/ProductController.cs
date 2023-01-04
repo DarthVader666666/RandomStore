@@ -49,6 +49,11 @@ namespace RandomStore.Application.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
             var product = await _service.GetProductByIdAsync(id);
 
             if (product == null)
@@ -63,6 +68,11 @@ namespace RandomStore.Application.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody] ProductUpdateModel product, 
             [FromRoute] int id)
         {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
             var result = await _service.UpdateProductAsync(product, id);
 
             if (result)
@@ -75,7 +85,12 @@ namespace RandomStore.Application.Controllers
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id)
-        { 
+        {
+            if (id < 1)
+            {
+                return BadRequest();
+            }
+
             var result = await _service.DeleteProductAsync(id);
 
             if (result)
