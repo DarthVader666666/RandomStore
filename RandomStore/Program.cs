@@ -16,6 +16,7 @@ using RandomStore.Services.Models.OrderModels;
 using RandomStore.Services.OrderDetailService;
 using RandomStore.Repository.Repositories.OrderDetailsRepositories;
 using RandomStore.Services.Models.OrderDetailsModels;
+using RandomStore.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,58 +26,23 @@ var loggerFactory = LoggerFactory.Create(logBuilder =>
     logBuilder.AddFilter("System", LogLevel.Error);
 });
 
-var logger = loggerFactory.CreateLogger("ServerErrorLogger");
+builder.Services.AddSingleton(typeof(ILogger), loggerFactory.CreateLogger("ServerErrorLogger"));
 
 builder.Services.
     AddDbContext<RandomStoreOneDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RandomStoreOne")));
 
-builder.Services.AddScoped<IProductService, ProductService>(provider =>
-    new ProductService(new ProductRepository(
-        provider.GetService<RandomStoreOneDbContext>()),
-        new Mapper(new MapperConfiguration(config =>
-        {
-            config.CreateMap<ProductCreateModel, Product>();
-            config.CreateMap<ProductUpdateModel, Product>();
-            config.CreateMap<Product, ProductGetModel>();
-        })),
-        logger));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-builder.Services.AddScoped<ICategoryService, CategoryService>(provider =>
-    new CategoryService(new CategoryRepository(
-        provider.GetService<RandomStoreOneDbContext>()),
-        new Mapper(new MapperConfiguration(config =>
-        {
-            config.CreateMap<CategoryCreateModel, Category>();
-            config.CreateMap<CategoryUpdateModel, Category>();
-            config.CreateMap<Category, CategoryGetModel>();
-        })),
-        logger));
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderDetailRepository, OrderDetailsRepository>();
 
-builder.Services.AddScoped<IOrderService, OrderService>(provider =>
-    new OrderService(new OrderRepository(
-        provider.GetService<RandomStoreOneDbContext>()),
-        new Mapper(new MapperConfiguration(config =>
-        {
-            config.CreateMap<OrderCreateModel, Order>();
-            config.CreateMap<OrderUpdateModel, Order>();
-            config.CreateMap<Order, OrderGetModel>();
-        })),
-        logger));
-
-builder.Services.AddScoped<IOrderDetailsService, OrderDetailsService>(provider =>
-    new OrderDetailsService(new OrderDetailsRepository(
-        provider.GetService<RandomStoreOneDbContext>()),
-        new OrderRepository(provider.GetService<RandomStoreOneDbContext>()),
-        new ProductRepository(provider.GetService<RandomStoreOneDbContext>()),
-        new Mapper(new MapperConfiguration(config =>
-        {
-            config.CreateMap<OrderDetailsCreateModel, OrderDetails>();
-            config.CreateMap<OrderDetailsUpdateModel, OrderDetails>();
-            config.CreateMap<OrderDetails, OrderDetailsGetModel>();
-        })),
-        logger));
-
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderDetailsService, OrderDetailsService>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
